@@ -1,0 +1,2023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hire-ly — Evidence-First Design Screening &amp; Analytics Workspace</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            canvas: '#F7F8FA',
+            surface: '#FFFFFF',
+            subtle: '#F1F3F5',
+            borderBase: '#E4E7EC',
+            borderStrong: '#D0D5DD',
+            textPrimary: '#101828',
+            textSecondary: '#475467',
+            textMuted: '#98A2B3',
+            brand: {
+              DEFAULT: '#03002F',
+              subtle: '#F1F2FF',
+              hover: '#0A075C',
+              coral: '#F04D44',
+              coralSubtle: '#FFF0EE'
+            },
+            status: {
+              strongText: '#027A48',
+              strongBg: '#ECFDF3',
+              possibleText: '#B54708',
+              possibleBg: '#FFFAEB',
+              weakText: '#344054',
+              weakBg: '#F2F4F7',
+              warningText: '#B54708',
+              warningBg: '#FFFAEB',
+              blockerText: '#B42318',
+              blockerBg: '#FEF3F2'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #F7F8FA; color: #101828; }
+    .drawer-open { transform: translateX(0); }
+    .drawer-closed { transform: translateX(100%); }
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #E4E7EC; border-radius: 4px; }
+    .mobile-frame { max-width: 390px !important; margin: 0 auto; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); border: 1px solid #D0D5DD; border-radius: 24px; overflow: hidden; }
+    .live-active-glow { box-shadow: 0 0 0 2px var(--hirely-navy), 0 4px 12px rgba(3, 0, 47, 0.25); }
+    .sidebar-icon-active { background-color: #F1F2FF; color: #03002F; }
+    :root {
+      --hirely-navy: #03002F;
+      --hirely-coral: #F04D44;
+      --hirely-canvas: #F7F8FA;
+      --hirely-surface: #FFFFFF;
+      --hirely-border: #E4E7EC;
+      --hirely-text: #101828;
+      --hirely-secondary: #475467;
+      --hirely-muted: #737A8A;
+      --hirely-strong: #027A48;
+      --hirely-strong-bg: #ECFDF3;
+      --hirely-possible: #B54708;
+      --hirely-possible-bg: #FFFAEB;
+      --hirely-weak: #475467;
+      --hirely-weak-bg: #F2F4F7;
+      --hirely-blocker: #B42318;
+      --hirely-blocker-bg: #FEF3F2;
+      --hirely-radius-sm: 4px;
+      --hirely-radius-md: 8px;
+      --hirely-radius-lg: 12px;
+      --hirely-space-1: 4px;
+      --hirely-space-2: 8px;
+      --hirely-space-3: 12px;
+      --hirely-space-4: 16px;
+      --hirely-space-5: 24px;
+      --hirely-space-6: 32px;
+    }
+    /* Final brand language overrides */
+    .bg-brand, .bg-indigo-900, .bg-indigo-950 { background-color: var(--hirely-navy) !important; }
+    .bg-indigo-600, .bg-indigo-800 { background-color: var(--hirely-navy) !important; }
+    .bg-indigo-500, .bg-indigo-400 { background-color: var(--hirely-coral) !important; }
+    .text-brand, .text-indigo-900, .text-indigo-950 { color: var(--hirely-navy) !important; }
+    .text-indigo-200, .text-indigo-300 { color: #D8D8E9 !important; }
+    .border-indigo-200, .border-indigo-900 { border-color: #D8D8E9 !important; }
+    .bg-brand-subtle, .bg-indigo-50, .bg-indigo-100 { background-color: #F1F2FF !important; }
+    .bg-brand-hover:hover { background-color: #0A075C !important; }
+    .bg-coral, .bg-red-500 { background-color: var(--hirely-coral) !important; }
+    .text-coral { color: var(--hirely-coral) !important; }
+    .bg-emerald-50 { background-color: var(--hirely-strong-bg) !important; }
+    .bg-emerald-500 { background-color: var(--hirely-strong) !important; }
+    .text-emerald-700, .text-emerald-800, .text-emerald-600 { color: var(--hirely-strong) !important; }
+    .border-emerald-200 { border-color: #A6F4C5 !important; }
+    .bg-amber-50 { background-color: var(--hirely-possible-bg) !important; }
+    .bg-amber-600, .bg-amber-500 { background-color: var(--hirely-possible) !important; }
+    .text-amber-700, .text-amber-800 { color: var(--hirely-possible) !important; }
+    .border-amber-200 { border-color: #FEDF89 !important; }
+    .bg-rose-50 { background-color: var(--hirely-blocker-bg) !important; }
+    .bg-rose-900, .bg-rose-900\/60 { background-color: var(--hirely-blocker) !important; }
+    .text-rose-600, .text-rose-700, .text-rose-800, .text-rose-200 { color: var(--hirely-blocker) !important; }
+    .border-rose-200, .border-rose-700 { border-color: #FDA29B !important; }
+    .bg-purple-50 { background-color: #F4F3FF !important; }
+    .bg-purple-100 { background-color: #E9E7FF !important; }
+    .text-purple-700 { color: var(--hirely-navy) !important; }
+    .border-purple-200 { border-color: #C7C2FF !important; }
+    .bg-slate-50, .bg-slate-100 { background-color: var(--hirely-canvas) !important; }
+    .bg-slate-200, .bg-slate-300 { background-color: #EAECF0 !important; }
+    .text-slate-400, .text-slate-500 { color: var(--hirely-muted) !important; }
+    .text-slate-700 { color: var(--hirely-secondary) !important; }
+    .border-slate-700, .border-slate-800 { border-color: var(--hirely-border) !important; }
+    .font-black { font-weight: 700; }
+    .type-heading { font-size: 20px; line-height: 28px; font-weight: 600; }
+    .type-title { font-size: 16px; line-height: 24px; font-weight: 600; }
+    .type-body { font-size: 14px; line-height: 20px; font-weight: 400; }
+    .type-caption { font-size: 12px; line-height: 16px; font-weight: 400; }
+    .type-overline { font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+    /* Keep legacy utility markup aligned to the canonical Hire-ly radius scale. */
+    .rounded-2xl { border-radius: 12px !important; }
+    .rounded-xl { border-radius: 8px !important; }
+    .rounded-lg { border-radius: 6px !important; }
+    .rounded-md { border-radius: 4px !important; }
+    .fit-badge, .status-pill, .warning-flag, .skill-chip, .experience-tag { border-radius: var(--hirely-radius-sm); }
+    .halo-logo { display: inline-flex; align-items: center; gap: 8px; color: var(--hirely-navy); font-weight: 700; letter-spacing: -.02em; }
+    .halo-mark { width: 32px; height: 32px; border-radius: 9px; background: var(--hirely-navy); position: relative; display: inline-block; flex: 0 0 auto; }
+    .halo-mark::after { content: ''; position: absolute; width: 16px; height: 16px; left: 8px; top: 8px; border-radius: 50%; background: #fff; }
+    .halo-mark::before { content: ''; position: absolute; width: 8px; height: 8px; right: -2px; top: 2px; border-radius: 50%; background: var(--hirely-coral); z-index: 2; }
+    .halo-logo.dark { color: #fff; }
+    .halo-logo.dark .halo-mark { background: #fff; }
+    .halo-logo.dark .halo-mark::after { background: var(--hirely-navy); }
+    .halo-logo.dark .halo-mark::before { background: var(--hirely-coral); }
+    .icon-pack { stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .dark-surface { background: var(--hirely-navy); color: #fff; }
+    .candidate-card { border-radius: var(--hirely-radius-lg); transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease; }
+    .candidate-card:hover { transform: translateY(-1px); }
+    .candidate-card.is-selected { border-color: var(--hirely-navy) !important; box-shadow: 0 0 0 3px rgba(3,0,47,.12); }
+    .candidate-card.is-shortlisted { border-top: 3px solid var(--hirely-strong); }
+    .thumbnail-strip { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+    .thumbnail-strip > * { min-width:0; }
+    .not-provided { color: var(--hirely-muted); font-style: italic; }
+    .dark-theme { background: var(--hirely-navy) !important; color:#fff !important; }
+    body.dark-theme .bg-canvas { background: var(--hirely-navy) !important; }
+    body.dark-theme .bg-surface { background:#0B0A3F !important; }
+    body.dark-theme .bg-white { background:#0B0A3F !important; }
+    body.dark-theme .bg-subtle { background:#16134D !important; }
+    body.dark-theme .border-borderBase, body.dark-theme .border-borderStrong { border-color:#34316B !important; }
+    body.dark-theme .text-textPrimary { color:#fff !important; }
+    body.dark-theme .text-textSecondary { color:#D3D3E8 !important; }
+    body.dark-theme .text-textMuted { color:#A7A7C5 !important; }
+    body.dark-theme .halo-logo:not(.dark) { color:var(--hirely-coral) !important; }
+    body.dark-theme .halo-logo:not(.dark) .halo-mark { background:#fff; }
+    body.dark-theme .halo-logo:not(.dark) .halo-mark::after { background:var(--hirely-navy); }
+
+    /* High-fidelity queue primitives: 8pt rhythm, calm evidence hierarchy. */
+    .screening-feed { display:grid; grid-template-columns:200px minmax(0,1fr); gap:24px; align-items:start; }
+    #topNavbar { height:72px; }
+    .screening-toolbar { top:72px !important; }
+    .context-filter-panel { position:sticky; top:96px; align-self:start; }
+    .context-filter-panel .filter-group + .filter-group { border-top:1px solid var(--hirely-border); margin-top:16px; padding-top:16px; }
+    .context-filter-panel label { display:flex; align-items:center; gap:8px; min-height:28px; color:var(--hirely-secondary); font-size:13px; line-height:20px; cursor:pointer; }
+    .context-filter-panel input { accent-color:var(--hirely-navy); width:16px; height:16px; }
+    .candidate-card { min-width:0; }
+    .candidate-card .fit-badge { white-space:nowrap; }
+    .candidate-evidence-bar { height:20px; border:1px solid var(--hirely-border); border-radius:6px; background:var(--hirely-canvas); display:flex; align-items:center; padding:0 8px; font-size:11px; line-height:16px; color:var(--hirely-secondary); }
+    .candidate-evidence-bar strong { color:var(--hirely-navy); }
+    .drawer-scrim { background:rgba(3,0,47,.18) !important; backdrop-filter:none !important; }
+    .drawer-anchor { color:var(--hirely-secondary); border-bottom:2px solid transparent; padding:8px 12px; font-size:11px; line-height:16px; cursor:pointer; }
+    .drawer-anchor:hover, .drawer-anchor.is-active { color:var(--hirely-navy); border-bottom-color:var(--hirely-coral); }
+    .drawer-action { min-height:32px; border:1px solid var(--hirely-border); border-radius:8px; padding:6px 10px; color:var(--hirely-navy); background:var(--hirely-surface); font-size:11px; font-weight:600; }
+    .drawer-action:hover { background:var(--hirely-canvas); border-color:var(--hirely-navy); }
+    .drawer-action.primary { background:var(--hirely-navy); color:white; border-color:var(--hirely-navy); }
+    .drawer-action.primary:hover { background:#0A075C; }
+    .drawer-meta { color:var(--hirely-secondary); font-size:12px; line-height:16px; }
+    @media (max-width: 1100px) {
+      .screening-feed { grid-template-columns:1fr; }
+      .context-filter-panel { position:relative; top:auto; }
+      .context-filter-panel .filter-group { display:inline-flex; flex-wrap:wrap; gap:4px 12px; margin-right:16px; border:0 !important; padding:0 !important; }
+      .context-filter-panel .filter-group h4 { width:100%; }
+    }
+    @media (max-width: 760px) {
+      .candidate-card { padding:16px !important; }
+      .candidate-card .fit-badge { white-space:normal; text-align:right; }
+      .thumbnail-strip { gap:4px; }
+      #quickDrawer { width:100vw; }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-canvas text-textPrimary flex antialiased relative overflow-x-hidden">
+
+  <!-- ================= WORKING GLOBAL NAVIGATION SIDEBAR ================= -->
+  <aside class="w-[68px] bg-surface border-r border-borderBase flex flex-col items-center justify-between py-5 shrink-0 z-40 select-none">
+    <div class="flex flex-col items-center gap-6">
+      <!-- 1. Hire-ly Brand Mark -->
+      <div onclick="switchView('analytics')" class="halo-logo cursor-pointer hover:scale-105 transition" title="Hire-ly Workspace" aria-label="Hire-ly workspace">
+        <span class="halo-mark" aria-hidden="true"></span>
+      </div>
+
+      <!-- Functional Navigation Icons -->
+      <nav class="flex flex-col gap-2 mt-2">
+        <!-- Dashboard Analytics -->
+        <button id="nav-btn-analytics" onclick="switchView('analytics')" class="nav-icon-btn w-10 h-10 rounded-xl sidebar-icon-active flex items-center justify-center transition cursor-pointer" title="Analytics &amp; Pipeline Overview">
+          <svg class="icon-pack w-5 h-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
+        </button>
+
+        <!-- Candidate Screening Queue -->
+        <button id="nav-btn-screening" onclick="switchView('screening')" class="nav-icon-btn w-10 h-10 rounded-xl text-textSecondary hover:bg-subtle hover:text-textPrimary flex items-center justify-center transition cursor-pointer relative" title="Candidate Screening Queue">
+          <i data-lucide="inbox" class="w-5 h-5"></i>
+          <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-brand"></span>
+        </button>
+
+        <!-- Shortlisted Pipeline -->
+        <button id="nav-btn-shortlist" onclick="filterByStageDirect('Shortlisted')" class="nav-icon-btn w-10 h-10 rounded-xl text-textSecondary hover:bg-subtle hover:text-textPrimary flex items-center justify-center transition cursor-pointer" title="Shortlisted Candidates">
+          <svg class="icon-pack w-5 h-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1Z"></path><path d="m9 11 2 2 4-4"></path></svg>
+        </button>
+
+        <!-- On Hold Pipeline -->
+        <button id="nav-btn-hold" onclick="filterByStageDirect('On Hold')" class="nav-icon-btn w-10 h-10 rounded-xl text-textSecondary hover:bg-subtle hover:text-textPrimary flex items-center justify-center transition cursor-pointer" title="On Hold Queue">
+          <svg class="icon-pack w-5 h-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+        </button>
+
+        <!-- 3-Up Aligned Comparison -->
+        <button id="nav-btn-compare" onclick="openCompareModal()" class="nav-icon-btn w-10 h-10 rounded-xl text-textSecondary hover:bg-subtle hover:text-textPrimary flex items-center justify-center transition cursor-pointer relative" title="Side-by-Side Candidate Comparison">
+          <svg class="icon-pack w-5 h-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="4" width="6" height="16" rx="1"></rect><rect x="14" y="4" width="6" height="16" rx="1"></rect><path d="M10 8h4M10 16h4"></path></svg>
+          <span id="navCompareBadge" class="hidden absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-500"></span>
+        </button>
+
+        <!-- Roles Directory Trigger -->
+        <button id="nav-btn-roles" onclick="focusRoleSelector()" class="nav-icon-btn w-10 h-10 rounded-xl text-textSecondary hover:bg-subtle hover:text-textPrimary flex items-center justify-center transition cursor-pointer" title="Open Job Requisitions">
+          <svg class="icon-pack w-5 h-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18M10 12v2h4v-2"></path></svg>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Bottom Controls -->
+    <div class="flex flex-col items-center gap-3">
+      <button id="viewportToggle" class="w-10 h-10 rounded-xl text-textSecondary hover:bg-subtle hover:text-textPrimary flex items-center justify-center transition cursor-pointer" title="Toggle 1440px Desktop / 390px Mobile View">
+        <i data-lucide="smartphone" class="w-5 h-5"></i>
+      </button>
+
+      <div onclick="switchView('analytics')" class="w-9 h-9 rounded-full bg-brand-subtle text-brand border border-indigo-200 flex items-center justify-center font-bold text-xs cursor-pointer hover:ring-2 hover:ring-brand/40 transition" title="Sarah Jenkins (Lead Recruiter)">
+        SJ
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN CONTENT WRAPPER ================= -->
+  <div class="flex-1 flex flex-col min-w-0 transition-all duration-300" id="mainContainer">
+    
+    <!-- TOP NAVBAR -->
+    <header id="topNavbar" class="h-16 bg-surface border-b border-borderBase px-8 flex items-center justify-between sticky top-0 z-30 shadow-xs">
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2 text-xs">
+          <button onclick="switchView('analytics')" class="halo-logo hover:text-brand transition" aria-label="Hire-ly workspace">
+            <span class="halo-mark" style="width:20px;height:20px;border-radius:6px" aria-hidden="true"></span>
+            <span>Hire-ly Workspace</span>
+          </button>
+          <span class="text-textMuted">/</span>
+          <span id="topbarBreadcrumb" class="text-textSecondary font-semibold">Analytics Dashboard</span>
+        </div>
+
+        <div class="h-5 w-px bg-borderBase"></div>
+
+        <!-- Role Requisition Switcher -->
+        <select id="roleSelector" class="text-xs font-semibold text-textSecondary bg-subtle border border-borderBase rounded-lg px-2.5 py-1.5 focus:outline-none cursor-pointer hover:border-brand transition">
+          <option value="ALL">All Roles (100 Total Candidates)</option>
+          <option value="Product Designer">Product Designer (17 open)</option>
+          <option value="Design Systems Designer">Design Systems Designer (2 open)</option>
+          <option value="Visual Designer">Visual Designer (12 open)</option>
+          <option value="UI Designer">UI Designer (12 open)</option>
+          <option value="UX Designer">UX Designer (12 open)</option>
+          <option value="UX Researcher">UX Researcher (12 open)</option>
+          <option value="Motion Designer">Motion Designer (8 open)</option>
+          <option value="Brand Designer">Brand Designer (9 open)</option>
+          <option value="Graphic Designer">Graphic Designer (11 open)</option>
+          <option value="Interaction Designer">Interaction Designer (5 open)</option>
+        </select>
+      </div>
+
+      <!-- Universal Search -->
+      <div class="flex-1 max-w-md mx-6 relative">
+        <i data-lucide="search" class="w-4 h-4 text-textMuted absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+        <input 
+          id="searchInput" 
+          type="text" 
+          placeholder="Search applicants by name, role, skill keywords, or ID..." 
+          class="w-full bg-subtle border border-borderBase rounded-xl pl-9 pr-4 py-2 text-xs focus:outline-none focus:border-brand focus:bg-white transition"
+        />
+      </div>
+
+      <!-- Controls -->
+      <div class="flex items-center gap-3">
+        <button id="liveScreeningBtn" class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-indigo-50 border border-indigo-200 text-brand text-xs font-semibold hover:bg-brand hover:text-white transition shadow-xs cursor-pointer">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" id="liveDot"></span>
+          <span id="liveBtnText">Live Screening</span>
+        </button>
+
+        <div class="flex items-center gap-2 bg-slate-50 border border-borderBase px-3 py-1.5 rounded-xl cursor-pointer select-none" id="blindToggle" title="Hides demographic identity">
+          <i data-lucide="eye-off" class="w-3.5 h-3.5 text-textSecondary"></i>
+          <span class="text-xs font-medium text-textSecondary">Blind Review</span>
+          <div id="blindTrack" class="w-8 h-4 bg-slate-300 rounded-full p-0.5 transition duration-200 ease-in-out relative flex items-center">
+            <div id="blindKnob" class="w-3 h-3 bg-white rounded-full shadow-sm transform transition duration-200"></div>
+          </div>
+        </div>
+
+        <button id="themeToggle" class="w-8 h-8 rounded-xl border border-borderBase bg-surface hover:bg-subtle text-textSecondary flex items-center justify-center transition" title="Toggle dark mode" aria-label="Toggle dark mode">
+          <i data-lucide="moon" class="w-4 h-4"></i>
+        </button>
+
+        <button onclick="openCompareModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-borderBase bg-surface hover:bg-subtle text-xs font-semibold text-textSecondary transition shadow-xs cursor-pointer">
+          <i data-lucide="columns" class="w-3.5 h-3.5 text-brand"></i>
+          <span>Compare (<span id="compareCountBadge">0</span>/3)</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ================= VIEW 1: LANDING ANALYTICS DASHBOARD ================= -->
+    <div id="view-analytics" class="p-8 pb-32 overflow-y-auto space-y-8">
+      
+      <!-- Greeting Header -->
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="type-heading text-textPrimary tracking-tight">Good Morning, Davis!</h2>
+          <p class="text-xs text-textSecondary mt-0.5">Here is the active pipeline summary across all 10 design requisitions and 100 inbound applicants.</p>
+        </div>
+
+        <button onclick="switchView('screening')" class="px-4 py-2 bg-brand text-white text-xs font-bold rounded-xl shadow-xs hover:bg-brand-hover transition flex items-center gap-1.5 cursor-pointer">
+          <span>Open Full Screening Workspace</span>
+          <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+
+      <!-- 4 TOP KPI CARDS -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="bg-surface border border-borderBase p-5 rounded-2xl shadow-xs flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-textSecondary">Total Applicants</span>
+            <span class="p-1 rounded-lg bg-subtle text-textMuted"><i data-lucide="users" class="w-4 h-4"></i></span>
+          </div>
+          <div class="my-3">
+            <div class="text-3xl font-black text-textPrimary tracking-tight">100</div>
+            <p class="text-[11px] text-textMuted mt-0.5">Across 10 active design requisitions</p>
+          </div>
+          <div class="bg-emerald-50 text-emerald-800 text-[11px] font-semibold px-2.5 py-1 rounded-lg border border-emerald-200 flex items-center justify-between">
+            <span>Inflow steady</span>
+            <span class="font-bold">+18% this week</span>
+          </div>
+        </div>
+
+        <div class="bg-surface border border-borderBase p-5 rounded-2xl shadow-xs flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-textSecondary">High Role Alignment</span>
+            <span class="p-1 rounded-lg bg-subtle text-textMuted"><i data-lucide="check-circle" class="w-4 h-4"></i></span>
+          </div>
+          <div class="my-3">
+            <div class="text-3xl font-black text-emerald-700 tracking-tight">31%</div>
+            <p class="text-[11px] text-textMuted mt-0.5">31 of 100 exceed verified gates</p>
+          </div>
+          <div class="bg-indigo-50 text-brand text-[11px] font-semibold px-2.5 py-1 rounded-lg border border-indigo-200 flex items-center justify-between">
+            <span>Filtered queue ready</span>
+            <span class="font-bold">31 Candidates</span>
+          </div>
+        </div>
+
+        <div class="bg-surface border border-borderBase p-5 rounded-2xl shadow-xs flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-textSecondary">Shortlisted &amp; Active</span>
+            <span class="p-1 rounded-lg bg-subtle text-textMuted"><i data-lucide="clock" class="w-4 h-4"></i></span>
+          </div>
+          <div class="my-3">
+            <div class="text-3xl font-black text-textPrimary tracking-tight">
+              <span id="kpiShortlistedCount">0</span> <span class="text-sm font-medium text-textMuted">Shortlisted</span>
+            </div>
+            <p class="text-[11px] text-textMuted mt-0.5"><span id="kpiHoldCount">0</span> on hold • <span id="kpiArchivedCount">0</span> archived</p>
+          </div>
+          <div class="bg-amber-50 text-amber-800 text-[11px] font-semibold px-2.5 py-1 rounded-lg border border-amber-200 flex items-center justify-between">
+            <span>Reviewer activity active</span>
+            <i data-lucide="check" class="w-3.5 h-3.5"></i>
+          </div>
+        </div>
+
+        <div class="bg-surface border border-borderBase p-5 rounded-2xl shadow-xs flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-textSecondary">Flagged for Human Review</span>
+            <span class="p-1 rounded-lg bg-subtle text-textMuted"><i data-lucide="alert-triangle" class="w-4 h-4"></i></span>
+          </div>
+          <div class="my-3">
+            <div class="text-3xl font-black text-amber-700 tracking-tight">14</div>
+            <p class="text-[11px] text-textMuted mt-0.5">Seniority mismatch, 404s, or duplicates</p>
+          </div>
+          <div class="bg-rose-50 text-rose-800 text-[11px] font-semibold px-2.5 py-1 rounded-lg border border-rose-200 flex items-center justify-between">
+            <span>Human judgment required</span>
+            <i data-lucide="alert-circle" class="w-3.5 h-3.5 text-rose-600"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- DATA VISUALIZATION SECTION -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- VISUAL 1: Pipeline Stage Funnel Diagram -->
+        <div class="bg-surface border border-borderBase p-6 rounded-2xl shadow-xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="text-sm font-bold text-textPrimary">Hiring Pipeline Funnel</h3>
+                <p class="text-[11px] text-textMuted">Conversion across screening stages</p>
+              </div>
+              <span class="text-xs font-semibold text-brand bg-brand-subtle px-2 py-0.5 rounded-full">Funnel Chart</span>
+            </div>
+
+            <div class="space-y-3 py-2">
+              <div>
+                <div class="flex justify-between text-xs font-semibold mb-1">
+                  <span>1. Inbound Submissions</span>
+                  <span>100 (100%)</span>
+                </div>
+                <div class="w-full h-5 bg-indigo-900 rounded-lg flex items-center px-2 text-[10px] text-white font-bold">100 Apps</div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs font-semibold mb-1">
+                  <span>2. Passed Role Gates</span>
+                  <span>55 (55%)</span>
+                </div>
+                <div class="w-3/4 h-5 bg-brand rounded-lg flex items-center px-2 text-[10px] text-white font-bold">55 Verified</div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs font-semibold mb-1">
+                  <span>3. High Fit Match (Exceeds)</span>
+                  <span>31 (31%)</span>
+                </div>
+                <div class="w-1/2 h-5 bg-emerald-600 rounded-lg flex items-center px-2 text-[10px] text-white font-bold">31 Top Matches</div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs font-semibold mb-1">
+                  <span>4. Currently Shortlisted</span>
+                  <span id="funnelShortlistCount">0 Active</span>
+                </div>
+                <div class="w-1/4 h-5 bg-amber-500 rounded-lg flex items-center px-2 text-[10px] text-white font-bold">Shortlisted</div>
+              </div>
+            </div>
+          </div>
+          <p class="text-[11px] text-textMuted mt-4 pt-3 border-t border-borderBase">Automated gates reduce reviewer reading volume by 45%.</p>
+        </div>
+
+        <!-- VISUAL 2: Capability Matrix Heatmap -->
+        <div class="bg-surface border border-borderBase p-6 rounded-2xl shadow-xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="text-sm font-bold text-textPrimary">Skill Density Heatmap</h3>
+                <p class="text-[11px] text-textMuted">Candidate depth by design competency</p>
+              </div>
+              <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Matrix</span>
+            </div>
+
+            <div class="grid grid-cols-4 gap-2 text-center text-xs py-1">
+              <div class="p-2.5 rounded-xl bg-indigo-950 text-white flex flex-col justify-between">
+                <span class="text-[10px] text-indigo-300">Figma</span>
+                <span class="font-extrabold text-base my-1">92%</span>
+                <span class="text-[9px] text-emerald-400">Expert</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-indigo-800 text-white flex flex-col justify-between">
+                <span class="text-[10px] text-indigo-200">Design Sys</span>
+                <span class="font-extrabold text-base my-1">68%</span>
+                <span class="text-[9px] text-indigo-200">Strong</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-indigo-600 text-white flex flex-col justify-between">
+                <span class="text-[10px] text-indigo-100">UX Research</span>
+                <span class="font-extrabold text-base my-1">54%</span>
+                <span class="text-[9px] text-indigo-100">Mid</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-indigo-100 text-brand flex flex-col justify-between">
+                <span class="text-[10px] text-indigo-900 font-semibold">Motion</span>
+                <span class="font-extrabold text-base my-1">26%</span>
+                <span class="text-[9px] text-textMuted">Sparse</span>
+              </div>
+            </div>
+
+            <div class="mt-4 space-y-2">
+              <div class="flex justify-between text-xs">
+                <span class="text-textSecondary">SaaS / Enterprise Experience</span>
+                <span class="font-bold text-textPrimary">40% of pool</span>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="text-textSecondary">FinTech / Payments Experience</span>
+                <span class="font-bold text-textPrimary">33% of pool</span>
+              </div>
+            </div>
+          </div>
+          <p class="text-[11px] text-textMuted mt-4 pt-3 border-t border-borderBase">Design systems and Figma are the most validated skill tags.</p>
+        </div>
+
+        <!-- VISUAL 3: Requisition Role Velocity Horizontal Bars -->
+        <div class="bg-surface border border-borderBase p-6 rounded-2xl shadow-xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="text-sm font-bold text-textPrimary">Applications by Role</h3>
+                <p class="text-[11px] text-textMuted">Horizontal volume distribution</p>
+              </div>
+              <span class="text-xs font-semibold text-textSecondary bg-subtle px-2 py-0.5 rounded-full">Bar Chart</span>
+            </div>
+
+            <div class="space-y-2.5 py-1 text-xs">
+              <div>
+                <div class="flex justify-between text-[11px] font-medium mb-1">
+                  <span>Product Designer</span>
+                  <span class="font-bold">17 apps</span>
+                </div>
+                <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-brand rounded-full" style="width: 85%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] font-medium mb-1">
+                  <span>UI / Visual Designer</span>
+                  <span class="font-bold">24 apps</span>
+                </div>
+                <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-emerald-500 rounded-full" style="width: 100%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] font-medium mb-1">
+                  <span>UX Designer / Researcher</span>
+                  <span class="font-bold">24 apps</span>
+                </div>
+                <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-indigo-500 rounded-full" style="width: 100%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] font-medium mb-1">
+                  <span>Motion &amp; Interaction</span>
+                  <span class="font-bold">13 apps</span>
+                </div>
+                <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-amber-500 rounded-full" style="width: 65%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SCREEN ALL 31 TOP CANDIDATES BUTTON -->
+          <button onclick="screenTop31Candidates()" class="mt-4 w-full py-2.5 bg-brand text-white text-xs font-bold rounded-xl shadow-xs hover:bg-brand-hover transition cursor-pointer flex items-center justify-center gap-2">
+            <i data-lucide="filter" class="w-3.5 h-3.5"></i>
+            <span>Screen All <span id="screenTopCount">31</span> Top Candidates →</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- BOTTOM DATA TABLE -->
+      <div class="bg-surface border border-borderBase rounded-2xl shadow-xs overflow-hidden">
+        <div class="p-6 border-b border-borderBase flex items-center justify-between">
+          <div>
+            <h3 class="text-sm font-bold text-textPrimary">Recent Candidate Screening Intake</h3>
+            <p class="text-[11px] text-textMuted">Live audit log with verified evidence readiness</p>
+          </div>
+          <button onclick="switchView('screening')" class="text-xs font-bold text-brand hover:underline cursor-pointer">
+            Open Full Queue →
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="border-b border-borderBase bg-slate-50/75 text-[11px] font-bold text-textSecondary uppercase tracking-wider">
+                <th class="py-3 px-6">Candidate</th>
+                <th class="py-3 px-6">Applied Role</th>
+                <th class="py-3 px-6">Experience</th>
+                <th class="py-3 px-6">Role Alignment</th>
+                <th class="py-3 px-6">Design Systems</th>
+                <th class="py-3 px-6">Action</th>
+              </tr>
+            </thead>
+            <tbody id="analyticsTableBody" class="divide-y divide-borderBase"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= VIEW 2: ROLE SCREENING WORKSPACE ================= -->
+    <div id="view-screening" class="hidden flex-1 flex flex-col min-w-0">
+      
+      <!-- ROLE CRITERIA BAR WITH CLICKABLE MODAL LINK -->
+      <div class="bg-surface border-b border-borderBase px-8 py-3.5 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-xs font-bold text-textPrimary uppercase tracking-wider">Role criteria:</h3>
+              <span id="roleCriteriaTitle" class="text-xs font-semibold text-brand">Senior Product Designer • Mid-level to Senior scope</span>
+            </div>
+            <div class="flex items-center gap-1.5 mt-1.5 flex-wrap">
+              <span class="px-2 py-0.5 rounded-md bg-white border border-borderBase text-[11px] text-textPrimary font-medium">
+                <strong class="font-bold text-textPrimary">Required:</strong> Design Systems
+              </span>
+              <span class="px-2 py-0.5 rounded-md bg-white border border-borderBase text-[11px] text-textPrimary font-medium">
+                <strong class="font-bold text-textPrimary">Required:</strong> Interaction Design
+              </span>
+              <span class="px-2 py-0.5 rounded-md bg-white border border-borderBase text-[11px] text-textPrimary font-medium">
+                <strong class="font-bold text-textPrimary">Required:</strong> UX Research
+              </span>
+              <span class="px-2 py-0.5 rounded-md bg-white border border-borderBase text-[11px] text-textPrimary font-medium">
+                <strong class="font-bold text-textPrimary">Preferred:</strong> FinTech
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <button onclick="openAlignmentInfoModal()" class="text-xs font-semibold text-brand hover:underline cursor-pointer flex items-center gap-1 shrink-0">
+          <span>How alignment works</span>
+          <i data-lucide="help-circle" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+
+      <!-- HORIZONTAL FILTER & STAGE BAR -->
+      <div class="screening-toolbar bg-surface border-b border-borderBase px-8 py-3 flex flex-wrap items-center justify-between gap-4 sticky top-16 z-20">
+        
+        <!-- Left: Pipeline Stage Tabs -->
+        <div class="flex items-center gap-1.5 bg-subtle p-1 rounded-xl border border-borderBase">
+          <button class="stage-tab px-3 py-1 rounded-lg bg-surface text-textPrimary font-semibold text-xs shadow-xs transition cursor-pointer" data-stage="All Applicants">
+            All <span class="ml-1 text-[11px] text-textMuted" id="tabCountAll">100</span>
+          </button>
+          <button class="stage-tab px-3 py-1 rounded-lg text-textSecondary hover:text-textPrimary font-medium text-xs transition cursor-pointer" data-stage="Shortlisted">
+            Shortlisted <span class="ml-1 text-[11px] text-textMuted" id="tabCountShortlisted">0</span>
+          </button>
+          <button class="stage-tab px-3 py-1 rounded-lg text-textSecondary hover:text-textPrimary font-medium text-xs transition cursor-pointer" data-stage="On Hold">
+            On Hold <span class="ml-1 text-[11px] text-textMuted" id="tabCountHold">0</span>
+          </button>
+          <button class="stage-tab px-3 py-1 rounded-lg text-textSecondary hover:text-textPrimary font-medium text-xs transition cursor-pointer" data-stage="Archived">
+            Archived <span class="ml-1 text-[11px] text-textMuted" id="tabCountArchived">0</span>
+          </button>
+        </div>
+
+        <!-- Right: Dropdown Filter Controls -->
+        <div class="flex items-center gap-2">
+          <select id="filterFitSelect" class="text-xs font-medium bg-surface border border-borderBase rounded-lg px-2.5 py-1.5 focus:outline-none text-textSecondary cursor-pointer hover:border-textSecondary">
+            <option value="ALL">All Fit Levels</option>
+            <option value="Exceeds">Exceeds criteria (31)</option>
+            <option value="Meets">Meets criteria (24)</option>
+            <option value="Needs review">Needs review (14)</option>
+            <option value="Below">Below target (31)</option>
+          </select>
+
+          <select id="filterSenioritySelect" class="text-xs font-medium bg-surface border border-borderBase rounded-lg px-2.5 py-1.5 focus:outline-none text-textSecondary cursor-pointer hover:border-textSecondary">
+            <option value="ALL">All Seniorities</option>
+            <option value="Senior">Senior (7+ yrs)</option>
+            <option value="Mid">Mid (3–6 yrs)</option>
+            <option value="Junior">Junior (0–2 yrs)</option>
+          </select>
+
+          <select id="filterIndustrySelect" class="text-xs font-medium bg-surface border border-borderBase rounded-lg px-2.5 py-1.5 focus:outline-none text-textSecondary cursor-pointer hover:border-textSecondary">
+            <option value="ALL">All Industries</option>
+            <option value="SaaS">SaaS / Enterprise</option>
+            <option value="FinTech">FinTech</option>
+            <option value="E-commerce">E-commerce</option>
+            <option value="Consumer Apps">Consumer Apps</option>
+            <option value="Healthcare">Healthcare</option>
+            <option value="Wealth Management">Wealth Management</option>
+            <option value="Insurance">Insurance</option>
+            <option value="EdTech">EdTech</option>
+            <option value="Gaming">Gaming</option>
+          </select>
+
+          <select id="filterVisaSelect" class="text-xs font-medium bg-surface border border-borderBase rounded-lg px-2.5 py-1.5 focus:outline-none text-textSecondary cursor-pointer hover:border-textSecondary">
+            <option value="ALL">All Eligibility</option>
+            <option value="Eligible">Authorized (No sponsor)</option>
+            <option value="Requires work visa">Needs Sponsorship</option>
+          </select>
+
+          <div class="h-4 w-px bg-borderBase mx-1"></div>
+          <select id="sortSelect" class="text-xs font-semibold bg-surface border border-borderBase rounded-lg px-2.5 py-1.5 focus:outline-none text-textPrimary cursor-pointer">
+            <option value="fit_desc">Highest Alignment First</option>
+            <option value="exp_desc">Experience: High to Low</option>
+            <option value="exp_asc">Experience: Low to High</option>
+            <option value="name_asc">Alphabetical (A–Z)</option>
+          </select>
+
+          <button id="clearFiltersBtn" class="text-xs font-semibold text-brand hover:underline px-2 py-1 cursor-pointer disabled:text-textMuted disabled:no-underline" disabled>
+            Clear
+          </button>
+        </div>
+      </div>
+
+      <!-- ACTIVE CHIPS ROW -->
+      <div class="bg-canvas border-b border-borderBase px-8 py-2.5 flex items-center justify-between text-xs">
+        <div class="flex items-center gap-2 flex-wrap" id="activeChipsList">
+          <span class="text-[11px] text-textMuted italic">Showing all candidates</span>
+        </div>
+        <div class="text-[11px] text-textSecondary font-medium shrink-0">
+          Showing <span id="filteredCountText" class="font-bold text-textPrimary">100</span> of <span id="totalCountText">100</span> verified profiles
+        </div>
+      </div>
+
+      <!-- CANDIDATES WORKSPACE FEED -->
+      <main class="screening-feed flex-1 p-8 pb-32 overflow-y-auto">
+        <!-- Contextual filters stay adjacent to the queue; global navigation remains in the workspace rail. -->
+        <aside class="context-filter-panel bg-surface border border-borderBase rounded-lg p-4" aria-label="Contextual candidate filters">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="type-title text-textPrimary">Filters</h3>
+            <button type="button" class="text-[11px] font-semibold text-brand hover:underline" onclick="clearAllFilters()">Clear all</button>
+          </div>
+          <div class="filter-group">
+            <h4 class="type-overline text-textSecondary mb-2">Seniority</h4>
+            <label><input type="checkbox" data-filter="seniority" value="Senior" />Senior</label>
+            <label><input type="checkbox" data-filter="seniority" value="Mid" />Mid-level</label>
+            <label><input type="checkbox" data-filter="seniority" value="Junior" />Junior</label>
+          </div>
+          <div class="filter-group">
+            <h4 class="type-overline text-textSecondary mb-2">Design skills</h4>
+            <label><input type="checkbox" data-filter="skill" value="Product design" />Product design</label>
+            <label><input type="checkbox" data-filter="skill" value="Interaction design" />Interaction design</label>
+            <label><input type="checkbox" data-filter="skill" value="Design Systems" />Design systems</label>
+          </div>
+          <div class="filter-group">
+            <h4 class="type-overline text-textSecondary mb-2">Tools</h4>
+            <label><input type="checkbox" data-filter="tool" value="Figma" />Figma</label>
+            <label><input type="checkbox" data-filter="tool" value="Sketch" />Sketch</label>
+          </div>
+          <div class="filter-group">
+            <h4 class="type-overline text-textSecondary mb-2">Industry</h4>
+            <label><input type="checkbox" data-filter="industry" value="FinTech" />FinTech</label>
+            <label><input type="checkbox" data-filter="industry" value="SaaS" />SaaS / enterprise</label>
+            <label><input type="checkbox" data-filter="industry" value="Healthcare" />Healthcare</label>
+          </div>
+          <div class="filter-group">
+            <h4 class="type-overline text-textSecondary mb-2">Work eligibility</h4>
+            <label><input type="checkbox" data-filter="visa" value="Eligible" />Eligible in India</label>
+            <label><input type="checkbox" data-filter="visa" value="Requires work visa" />Needs sponsor</label>
+          </div>
+        </aside>
+
+        <section class="min-w-0">
+        <div id="zeroState" class="hidden bg-surface border border-dashed border-borderStrong rounded-2xl p-12 text-center max-w-xl mx-auto my-8">
+          <div class="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-200 text-amber-600">
+            <i data-lucide="filter-x" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-base font-bold text-textPrimary">No candidates match active filters</h3>
+          <p class="text-xs text-textSecondary mt-1 leading-relaxed">
+            Try relaxing specific skill, seniority, or industry constraints to find candidates with transferable experience.
+          </p>
+          <p class="text-[11px] text-textMuted mt-3">Suggested adjustment: clear the most recent filter or switch to All applicants.</p>
+          <button onclick="clearAllFilters()" class="mt-4 px-4 py-2 bg-brand text-white text-xs font-semibold rounded-xl hover:bg-brand-hover transition shadow-xs cursor-pointer">
+            Reset all filters
+          </button>
+        </div>
+
+        <div id="candidatesGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+        </section>
+      </main>
+    </div>
+
+  </div>
+
+  <!-- ================= HOW ALIGNMENT WORKS MODAL[cite: 13] ================= -->
+  <div id="alignmentInfoModal" class="fixed inset-0 bg-black/50 z-50 hidden backdrop-blur-xs flex items-center justify-center p-6">
+    <div class="bg-surface rounded-2xl max-w-xl w-full border border-borderBase shadow-2xl p-6">
+      <div class="flex items-center justify-between pb-3 border-b border-borderBase mb-4">
+        <h3 class="text-sm font-bold text-textPrimary">How Role Alignment Works</h3>
+        <button onclick="closeAlignmentInfoModal()" class="p-1 rounded-lg hover:bg-subtle text-textMuted cursor-pointer"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+      <div class="space-y-3 text-xs text-textSecondary leading-relaxed">
+        <p><strong>1. Evidence-based scoring:</strong> Self-ratings are displayed but never verify a capability on their own. Verified criteria require linked project samples, stated team contributions, or verified tools.</p>
+        <p><strong>2. Gate criteria:</strong> Eligibility (citizenship/visa) and baseline seniority serve as strict gates. If an applicant has a visa blocker, they are flagged regardless of skill scores.</p>
+        <p><strong>3. Reviewer oversight:</strong> The alignment badge serves as a starting point. Recruiters can click <em>Override</em> inside any profile to change the evaluation based on qualitative interview findings.</p>
+      </div>
+      <div class="mt-6 flex justify-end">
+        <button onclick="closeAlignmentInfoModal()" class="px-4 py-2 bg-brand text-white text-xs font-semibold rounded-xl hover:bg-brand-hover transition cursor-pointer">Understood</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= FLOATING BATCH ACTION BAR ================= -->
+  <div id="bulkActionBar" class="fixed bottom-6 left-1/2 -translate-x-1/2 dark-surface text-white px-5 py-3 rounded-xl shadow-2xl z-40 flex items-center gap-5 border border-slate-700 hidden">
+    <div class="flex items-center gap-2.5">
+      <span class="w-5 h-5 rounded-full bg-brand flex items-center justify-center text-xs font-bold" id="selectedCount">0</span>
+      <span class="text-xs font-medium">candidates selected</span>
+    </div>
+    <div class="h-4 w-px bg-slate-700"></div>
+    <div class="flex items-center gap-2">
+      <button class="px-3.5 py-1.5 bg-brand hover:bg-brand-hover text-white rounded-xl text-xs font-semibold transition cursor-pointer" onclick="bulkMoveStage('Shortlisted')">Shortlist</button>
+      <button class="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-semibold transition cursor-pointer" onclick="bulkMoveStage('On Hold')">Move to Hold</button>
+      <button class="px-3.5 py-1.5 bg-rose-900/60 hover:bg-rose-900 text-rose-200 border border-rose-700 rounded-xl text-xs font-semibold transition cursor-pointer" onclick="promptBulkReject()">Reject</button>
+    </div>
+    <button class="text-slate-400 hover:text-white text-xs underline cursor-pointer ml-1" onclick="clearSelection()">Deselect</button>
+  </div>
+
+  <!-- ================= CONFIRMATION REJECTION MODAL ================= -->
+  <div id="confirmModal" class="fixed inset-0 bg-black/50 z-50 hidden backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-surface rounded-2xl p-6 max-w-md w-full border border-borderBase shadow-2xl">
+      <div class="w-10 h-10 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mb-4 border border-rose-200">
+        <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+      </div>
+      <h3 class="text-base font-bold text-textPrimary" id="confirmTitle">Confirm Rejection</h3>
+      <p class="text-xs text-textSecondary mt-1 leading-relaxed" id="confirmDesc">
+        Are you sure you want to move selected candidate(s) to Archived/Rejected? You will have 6 seconds to undo this decision.
+      </p>
+      <div class="flex items-center justify-end gap-2.5 mt-6">
+        <button class="px-3.5 py-2 border border-borderBase rounded-xl text-xs font-semibold text-textSecondary hover:bg-subtle transition cursor-pointer" onclick="closeConfirmModal()">Cancel</button>
+        <button class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-semibold transition cursor-pointer" id="confirmActionBtn">Confirm Rejection</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= DUPLICATE APPLICATION REVIEW ================= -->
+  <div id="mergeModal" class="fixed inset-0 bg-black/45 z-50 hidden backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-surface rounded-lg p-6 max-w-md w-full border border-borderBase shadow-2xl">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <div class="type-overline text-amber-700">Duplicate application</div>
+          <h3 class="type-title text-textPrimary mt-1" id="mergeTitle">Review duplicate applications</h3>
+        </div>
+        <button type="button" class="p-1 rounded-md hover:bg-subtle text-textMuted" onclick="closeMergeModal()" aria-label="Close duplicate review"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+      <p class="text-xs text-textSecondary leading-relaxed mt-3" id="mergeDesc">Keep both applications until a reviewer confirms which record should be retained.</p>
+      <div class="flex items-center justify-end gap-2 mt-5">
+        <button type="button" class="drawer-action" onclick="closeMergeModal()">Keep both</button>
+        <button type="button" class="drawer-action primary" onclick="confirmMergeCandidate()">Open merge review</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= REVERSIBLE UNDO TOAST NOTIFICATION ================= -->
+  <div id="undoToast" class="fixed bottom-6 right-6 dark-surface text-white px-4 py-3 rounded-xl shadow-xl z-50 flex items-center gap-3 border border-slate-700 hidden">
+    <i data-lucide="info" class="w-4 h-4 text-brand"></i>
+    <span class="text-xs font-medium" id="toastMessage">Action completed</span>
+    <button class="text-xs text-brand font-bold hover:underline cursor-pointer" onclick="dismissToast(true)">Undo</button>
+    <button onclick="dismissToast(false)"><i data-lucide="x" class="w-3.5 h-3.5 text-slate-400"></i></button>
+  </div>
+
+  <!-- ================= CANDIDATE PREVIEW DRAWER (UPDATED PER IMAGE 3) ================= -->
+  <div id="drawerOverlay" class="drawer-scrim fixed inset-0 z-40 hidden transition" onclick="closeDrawer()"></div>
+  <aside id="quickDrawer" class="fixed top-0 right-0 w-[580px] max-w-full h-full bg-surface border-l border-borderBase z-50 shadow-2xl flex flex-col justify-between drawer-closed transition-transform duration-300 ease-in-out">
+    
+    <!-- Drawer Header with Spider Chart -->
+    <div class="p-5 border-b border-borderBase bg-surface">
+      <div class="flex items-center justify-between mb-2">
+        <span class="type-caption text-textMuted" id="dBreadcrumb">Design team / Product Designer / Candidate review</span>
+        <div class="flex items-center gap-1.5">
+          <button class="drawer-action" type="button" onclick="previousCandidateDrawer()" aria-label="Previous candidate">‹</button>
+          <button class="drawer-action" type="button" onclick="nextCandidateDrawer()" aria-label="Next candidate">›</button>
+          <button class="drawer-action" type="button" onclick="toggleDrawerPinned()" id="drawerPinBtn">Pin</button>
+          <button class="drawer-action" type="button" onclick="closeDrawer()" aria-label="Close candidate preview"><i data-lucide="x" class="w-4 h-4"></i></button>
+        </div>
+      </div>
+      <div class="flex-1 pr-4">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <span class="text-[10px] font-mono text-textMuted uppercase" id="dCandidateRoleTag">C-002 • PRODUCT DESIGNER</span>
+            <h2 class="type-heading text-textPrimary mt-0.5" id="dName">Candidate Name</h2>
+            <p class="text-xs text-textSecondary mt-0.5" id="dSub">Design Systems Designer • 4 years • Bengaluru</p>
+          </div>
+          <div class="text-right shrink-0">
+            <div class="type-overline text-textMuted">Queue position</div>
+            <div class="type-title text-textPrimary" id="dCandidateIndex">1 of 14</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 mt-3 flex-wrap">
+          <span id="dStatusPill" class="status-pill inline-flex items-center gap-1 px-2 py-1 bg-status-strongBg text-status-strongText border border-emerald-200 text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-current"></span>Shortlisted</span>
+          <span class="drawer-meta" id="dOwnerMeta">Owner Maya Chen · Last reviewed today · <span class="text-emerald-700 font-semibold">● Maya reviewing</span></span>
+        </div>
+      </div>
+
+      <!-- Evidence-first role-fit summary; avoids false-precision gauges -->
+      <div class="flex items-center gap-3">
+        <div class="w-44" id="dCriteriaSummary" aria-label="Role-fit evidence summary"></div>
+      </div>
+      <div class="flex items-center gap-1 mt-4 border-b border-borderBase" role="navigation" aria-label="Candidate sections">
+        <button class="drawer-anchor is-active" type="button" data-anchor="summary">Summary</button>
+        <button class="drawer-anchor" type="button" data-anchor="portfolio">Portfolio</button>
+        <button class="drawer-anchor" type="button" data-anchor="role-fit">Role fit</button>
+        <button class="drawer-anchor" type="button" data-anchor="experience">Experience</button>
+        <button class="drawer-anchor" type="button" data-anchor="resume">Resume</button>
+        <button class="drawer-anchor" type="button" data-anchor="notes">Notes</button>
+      </div>
+      <div class="flex items-center gap-2 mt-3 flex-wrap">
+        <button class="drawer-action" type="button" onclick="toggleCompareCandidate(currentDrawerCandidateId)">+ Compare</button>
+        <button class="drawer-action" type="button" onclick="focusDrawerNotes()">+ Add note</button>
+        <button class="drawer-action" type="button" onclick="triggerToast('Question added to reviewer notes')">? Question</button>
+        <button class="drawer-action" type="button" onclick="triggerToast('Owner assignment control opened')">Assign owner</button>
+        <a class="drawer-action" id="dPortfolioLink" href="#" target="_blank" rel="noreferrer">Open portfolio ↗</a>
+      </div>
+    </div>
+
+    <!-- Drawer Content Scroll -->
+    <div class="p-6 flex-1 overflow-y-auto space-y-6 custom-scrollbar text-xs">
+      
+      <!-- Role Alignment Status Banner -->
+      <div class="bg-subtle p-3.5 rounded-xl border border-borderBase">
+        <div class="flex items-center justify-between mb-1.5">
+          <span id="dFitBadge" class="px-2.5 py-0.5 rounded-full text-xs font-bold border">Role Fit</span>
+          <span class="text-xs font-bold text-textPrimary" id="dLinkedCount">2/3 required with linked samples</span>
+        </div>
+        <p class="text-[11px] text-textMuted leading-relaxed">
+          Coverage comes from the current role's criteria. Linked materials are candidate-supplied. Self-ratings never verify a capability on their own.
+        </p>
+      </div>
+
+      <div id="drawerRoleFit" class="space-y-3" aria-label="Role-fit criteria">
+        <div class="flex items-center justify-between">
+          <h3 class="type-title text-textPrimary">Why this match</h3>
+          <span class="type-caption text-textMuted">Evidence by criterion</span>
+        </div>
+        <div id="dCriteriaMatrix" class="space-y-2"></div>
+      </div>
+
+      <!-- Verified Competency Rows[cite: 12] -->
+      <div id="drawerExperience" class="space-y-4">
+        <!-- 1. Design Systems -->
+        <div class="pb-3 border-b border-borderBase">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-sm font-bold text-textPrimary">Design Systems</span>
+            <span class="px-2 py-0.5 rounded-md bg-indigo-50 text-brand font-semibold text-[11px]">Linked sample</span>
+          </div>
+          <p class="text-xs text-textSecondary" id="dDsDesc">Component variants and documentation are present.</p>
+          <a href="#" id="dDsProjectLink" class="text-brand font-semibold hover:underline inline-block mt-1" target="_blank" rel="noreferrer">View supporting project →</a>
+        </div>
+
+        <!-- 2. Interaction Design -->
+        <div class="pb-3 border-b border-borderBase">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-sm font-bold text-textPrimary">Interaction Design</span>
+            <span class="px-2 py-0.5 rounded-md bg-indigo-50 text-brand font-semibold text-[11px]">Linked sample</span>
+          </div>
+          <p class="text-xs text-textSecondary" id="dIxDesc">Interactive component states are supplied.</p>
+          <a href="#" id="dIxProjectLink" class="text-brand font-semibold hover:underline inline-block mt-1" target="_blank" rel="noreferrer">View supporting project →</a>
+        </div>
+
+        <!-- 3. UX Research -->
+        <div class="pb-3 border-b border-borderBase">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-sm font-bold text-textPrimary">UX Research</span>
+            <span class="px-2 py-0.5 rounded-md bg-slate-100 text-textSecondary font-semibold text-[11px]">Self-reported</span>
+          </div>
+          <p class="text-xs text-textSecondary">Research support is self-reported without a linked case study sample.</p>
+        </div>
+
+        <!-- 4. Preferred Experience -->
+        <div class="pb-3 border-b border-borderBase">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-sm font-bold text-textPrimary">FinTech experience (preferred)</span>
+            <span class="px-2 py-0.5 rounded-md bg-slate-100 text-textMuted font-semibold text-[11px]" id="dFintechBadge">Not provided</span>
+          </div>
+          <p class="text-xs text-textSecondary">Industry experience is evaluated separately from required capability evidence.</p>
+        </div>
+      </div>
+
+      <!-- PORTFOLIO & CONTRIBUTION HORIZONTAL SCROLL STRIP[cite: 12] -->
+      <div id="drawerPortfolio">
+        <div class="flex items-center justify-between mb-2.5">
+          <h3 class="font-bold text-textPrimary text-sm">Portfolio &amp; contribution</h3>
+          <a href="#" id="dResumeLink" class="text-xs font-semibold text-brand hover:underline" target="_blank" rel="noreferrer">View sample resume ↗</a>
+        </div>
+        
+        <!-- Horizontal Scrollable Container -->
+        <div class="overflow-x-auto custom-scrollbar pb-2">
+          <div class="flex gap-3 min-w-[500px]" id="dPortfolioStripHorizontal">
+            <!-- Populated dynamically with horizontal cards -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Reviewer Qualitative Notes -->
+      <div id="drawerNotes" class="p-4 bg-slate-50 border border-borderBase rounded-xl space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-textPrimary uppercase tracking-wider text-[11px]">Reviewer Decision &amp; Notes</span>
+          <span class="text-[10px] text-textMuted">Private • Auto-saved</span>
+        </div>
+        <textarea id="dNotesInput" placeholder="Add qualitative evaluation notes, portfolio critique, or next interview questions..." class="w-full h-20 p-2.5 bg-white border border-borderBase rounded-xl text-xs focus:outline-none focus:border-brand"></textarea>
+      </div>
+
+    </div>
+
+    <!-- Drawer Footer Actions[cite: 12] -->
+    <div class="p-4 border-t border-borderBase bg-surface flex items-center justify-between sticky bottom-0">
+      <button class="px-4 py-2 border border-borderBase text-textSecondary font-semibold rounded-xl hover:bg-subtle transition cursor-pointer" onclick="nextCandidateDrawer()">Next candidate</button>
+      <div class="flex items-center gap-2">
+        <button class="px-3.5 py-2 bg-amber-50 border border-amber-200 text-amber-800 font-semibold rounded-xl hover:bg-amber-100 transition cursor-pointer" onclick="drawerHold()">Hold</button>
+        <button class="px-3.5 py-2 text-rose-600 hover:bg-rose-50 font-semibold rounded-xl transition cursor-pointer" onclick="drawerReject()">Reject</button>
+        <button class="px-4 py-2 bg-brand text-white font-semibold rounded-xl hover:bg-brand-hover transition cursor-pointer" onclick="drawerShortlist()">Shortlist</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= 3-UP ALIGNED COMPARISON MODAL ================= -->
+  <div id="compareModal" class="fixed inset-0 bg-black/50 z-50 hidden backdrop-blur-xs flex items-center justify-center p-6">
+    <div class="bg-surface rounded-2xl max-w-5xl w-full h-[90vh] border border-borderBase shadow-2xl flex flex-col overflow-hidden">
+      <div class="p-5 border-b border-borderBase flex items-center justify-between bg-white">
+        <div>
+          <h2 class="text-base font-bold text-textPrimary">Candidate Comparison Matrix (3-Up)</h2>
+          <p class="text-xs text-textSecondary">Side-by-side aligned evidence comparison. Differences highlighted.</p>
+        </div>
+        <button class="p-1.5 rounded-lg hover:bg-subtle text-textMuted hover:text-textPrimary cursor-pointer" onclick="closeCompareModal()">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div class="flex-1 overflow-y-auto p-6 custom-scrollbar" id="compareMatrixContainer"></div>
+      <div class="p-4 border-t border-borderBase bg-slate-50 flex items-center justify-between text-xs text-textMuted">
+        <span>Missing candidate data is rendered as explicit "Not provided".</span>
+        <button class="px-4 py-2 bg-brand text-white font-semibold rounded-xl hover:bg-brand-hover transition cursor-pointer" onclick="closeCompareModal()">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= INLINE DATASET & ENGINE SCRIPT ================= -->
+  <script>
+    // Embedded sample dataset with verified edge cases and zero CORS restrictions.
+    // The Figma scenario uses 100 applicants; this local prototype keeps a compact sample so interactions stay fast.
+    const candidates = [
+      {"id":"C-001","name":"Pooja Deshmukh","role":"Product Designer","email":"pooja.deshmukh@yahoo.com","phone":"+91 79103 12368","location":"Kochi, India","portfolio":"","resume":"https://files.example.com/resumes/Pooja_Deshmukh_Resume.pdf","linkedin":"","dribbble":"","behance":"","visa":"Eligible (Indian citizen)","relocate":"Yes","exp":1,"seniority":"Junior","last_title":"Junior Product Designer","exp_type":"Agency","industries":["E-commerce"],"leadership":"No","collaboration":"Design critiques and pairing with 3 designers","projects":["1) Telehealth booking app (E-commerce): Contributing designer, team of 1; raised NPS by 40 points","2) Portfolio tracker dashboard (E-commerce): Owned end-to-end UX, team of 6; adopted across 5 product teams"],"skills":{"UI Design":3,"UX Research":2,"Wireframing":3,"Prototyping":4,"Visual Design":3,"Design Systems":3,"Accessibility Design":2,"Interaction Design":3,"Motion/Animation":3,"Branding":1},"tools":{"Figma":4,"Adobe XD":1,"Sketch":1,"Illustrator":3,"After Effects":1,"Webflow":2,"Notion":4,"Claude Design / Lovable / Gemini":2,"HTML/CSS (basic)":3,"GitHub (handoff awareness)":1},"test_note":"Missing portfolio URL","fit":"Below","stage":"All Applicants","notes":""},
+      {"id":"C-002","name":"Aarav Banerjee","role":"Design Systems Designer","email":"aarav.banerjee54@gmail.com","phone":"Not provided","location":"Bengaluru, India","portfolio":"https://aaravbanerjee.design","resume":"https://files.example.com/resumes/Aarav_Banerjee_Resume.pdf","linkedin":"","dribbble":"","behance":"","visa":"Eligible (Indian citizen)","relocate":"Yes","exp":5,"seniority":"Mid","last_title":"Design Systems Designer","exp_type":"In-house","industries":["SaaS","Enterprise Software"],"leadership":"No","collaboration":"Worked daily with PMs and engineers in agile squads","projects":["1) Component library migration (SaaS): Owned end-to-end UX, team of 8; adopted across 2 product teams","2) Accessibility audit and fixes (SaaS): Co-designed with 2 designers, team of 8; raised NPS by 22 points"],"skills":{"UI Design":3,"UX Research":1,"Wireframing":3,"Prototyping":4,"Visual Design":4,"Design Systems":5,"Accessibility Design":5,"Interaction Design":3,"Motion/Animation":1,"Branding":2},"tools":{"Figma":5,"Adobe XD":1,"Sketch":3,"Illustrator":2,"After Effects":0,"Webflow":1,"Notion":4,"Claude Design / Lovable / Gemini":4,"HTML/CSS (basic)":4,"GitHub (handoff awareness)":5},"test_note":"Missing phone","fit":"Exceeds","stage":"All Applicants","notes":""},
+      {"id":"C-003","name":"Karthik Chopra","role":"Product Designer","email":"karthik.chopra@proton.me","phone":"+91 70383 29604","location":"Mumbai, India","portfolio":"https://karthikchopra.design","resume":"https://files.example.com/resumes/Karthik_Chopra_Resume.pdf","linkedin":"","dribbble":"","behance":"","visa":"Eligible (Indian citizen)","relocate":"Open to discuss","exp":2,"seniority":"Junior","last_title":"Junior UI Designer","exp_type":"Agency","industries":["Insurance"],"leadership":"No","collaboration":"Collaborated with copywriters and developers on campaigns","projects":["1) Loyalty rewards hub (Insurance): Lead designer, team of 3; shipped to 3k users","2) Self-serve KYC journey (Insurance): Contributing designer, team of 1; reduced support tickets by 30%"],"skills":{"UI Design":3,"UX Research":4,"Wireframing":3,"Prototyping":3,"Visual Design":4,"Design Systems":3,"Accessibility Design":3,"Interaction Design":4,"Motion/Animation":1,"Branding":1},"tools":{"Figma":5,"Adobe XD":2,"Sketch":0,"Illustrator":2,"After Effects":1,"Webflow":3,"Notion":1,"Claude Design / Lovable / Gemini":4,"HTML/CSS (basic)":2,"GitHub (handoff awareness)":1},"test_note":"","fit":"Exceeds","stage":"All Applicants","notes":""},
+      {"id":"C-004","name":"Omkar Ansari","role":"Product Designer","email":"omkar.ansari53@yahoo.com","phone":"+91 66424 52495","location":"Mumbai, India","portfolio":"https://omkaransari.design","resume":"https://files.example.com/resumes/Omkar_Ansari_Resume.pdf","linkedin":"https://www.linkedin.com/in/omkar-ansari-89f","dribbble":"","behance":"","visa":"Eligible (Indian citizen)","relocate":"Open to discuss","exp":7,"seniority":"Senior","last_title":"Senior Product Designer","exp_type":"In-house","industries":["FinTech","Consumer Apps"],"leadership":"Yes","collaboration":"Cross-functional pod with PM, dev and QA","projects":["1) Loyalty rewards hub (FinTech): Visual lead, team of 4; cut design-to-dev time by 35%","2) Checkout flow revamp (FinTech): Lead designer, team of 4; cut drop-off by 12%"],"skills":{"UI Design":4,"UX Research":4,"Wireframing":3,"Prototyping":4,"Visual Design":5,"Design Systems":3,"Accessibility Design":3,"Interaction Design":5,"Motion/Animation":2,"Branding":2},"tools":{"Figma":5,"Adobe XD":2,"Sketch":3,"Illustrator":3,"After Effects":1,"Webflow":1,"Notion":4,"Claude Design / Lovable / Gemini":4,"HTML/CSS (basic)":2,"GitHub (handoff awareness)":4},"test_note":"","fit":"Exceeds","stage":"All Applicants","notes":""},
+      {"id":"C-005","name":"Gauri Kulkarni","role":"Visual Designer","email":"gauri.kulkarni@gmail.com","phone":"Not provided","location":"Bengaluru, India","portfolio":"https://www.behance.net/gaurikulkarni","resume":"https://files.example.com/resumes/Gauri_Kulkarni_Resume.pdf","linkedin":"","dribbble":"","behance":"","visa":"Eligible (Indian citizen)","relocate":"Yes","exp":1,"seniority":"Junior","last_title":"Associate Visual Designer","exp_type":"In-house","industries":["SaaS"],"leadership":"No","collaboration":"Worked daily with PMs and engineers in agile squads","projects":["1) Campaign key visuals (SaaS): Contributing designer, team of 3; adopted across 12 product teams","2) Brand-led landing page (SaaS): Lead designer, team of 10; raised NPS by 18 points"],"skills":{"UI Design":2,"UX Research":1,"Wireframing":3,"Prototyping":3,"Visual Design":5,"Design Systems":3,"Accessibility Design":1,"Interaction Design":2,"Motion/Animation":2,"Branding":3},"tools":{"Figma":3,"Adobe XD":0,"Sketch":1,"Illustrator":3,"After Effects":3,"Webflow":3,"Notion":2,"Claude Design / Lovable / Gemini":1,"HTML/CSS (basic)":3,"GitHub (handoff awareness)":1},"test_note":"Missing phone","fit":"Below","stage":"All Applicants","notes":""},
+      {"id":"C-006","name":"Mohit Iyer","role":"UX Researcher","email":"mohit.iyer@proton.me","phone":"+91 61857 06753","location":"Kochi, India","portfolio":"https://mohitiyer.notion.site/portfolio","resume":"https://files.example.com/resumes/Mohit_Iyer_Resume.pdf","linkedin":"","dribbble":"","behance":"","visa":"Eligible (Indian citizen)","relocate":"Yes","exp":4,"seniority":"Mid","last_title":"UX Researcher","exp_type":"Agency","industries":["Enterprise Software"],"leadership":"No","collaboration":"Ran client workshops with product stakeholders","projects":["1) Churn interviews with 24 users (Enterprise Software): insights adopted by 5 product teams","2) Diary study on first-time SIP investors (Enterprise Software): findings reshaped the quarterly roadmap"],"skills":{"UI Design":1,"UX Research":5,"Wireframing":2,"Prototyping":1,"Visual Design":1,"Design Systems":3,"Accessibility Design":4,"Interaction Design":2,"Motion/Animation":1,"Branding":2},"tools":{"Figma":3,"Adobe XD":0,"Sketch":2,"Illustrator":0,"After Effects":2,"Webflow":0,"Notion":4,"Claude Design / Lovable / Gemini":3,"HTML/CSS (basic)":1,"GitHub (handoff awareness)":0},"test_note":"Project role and team size unclear","fit":"Needs review","stage":"All Applicants","notes":""},
+      {"id":"C-007","name":"Pooja Chopra","role":"Visual Designer","email":"pooja.chopra@proton.me","phone":"+91 91236 61368","location":"Pune, India","portfolio":"","resume":"https://files.example.com/resumes/Pooja_Chopra_Resume.pdf","linkedin":"","dribbble":"","behance":"","visa":"Eligible (Indian citizen)","relocate":"No","exp":1,"seniority":"Junior","last_title":"Junior Visual Designer","exp_type":"In-house","industries":["E-commerce"],"leadership":"No","collaboration":"Cross-functional pod with PM, dev and QA","projects":["1) Editorial web features (E-commerce): Visual lead, team of 8; shipped to 8k users","2) Campaign key visuals (E-commerce): Contributing designer, team of 6; adopted across 2 product teams"],"skills":{"UI Design":2,"UX Research":1,"Wireframing":2,"Prototyping":1,"Visual Design":4,"Design Systems":3,"Accessibility Design":3,"Interaction Design":1,"Motion/Animation":2,"Branding":3},"tools":{"Figma":4,"Adobe XD":0,"Sketch":0,"Illustrator":4,"After Effects":3,"Webflow":2,"Notion":1,"Claude Design / Lovable / Gemini":2,"HTML/CSS (basic)":1,"GitHub (handoff awareness)":0},"test_note":"Missing portfolio URL","fit":"Meets","stage":"All Applicants","notes":""},
+      {"id":"C-008","name":"Bhavya Hegde","role":"UI Designer","email":"alt.bhavya.hegde40@yahoo.com","phone":"+91 98118 15735","location":"Delhi NCR, India","portfolio":"https://www.behance.net/bhavyahegde","resume":"https://files.example.com/resumes/Bhavya_Hegde_Resume.pdf","linkedin":"","dribbble":"","behance":"","visa":"Eligible (Indian citizen)","relocate":"Yes","exp":3,"seniority":"Mid","last_title":"UI Designer","exp_type":"In-house","industries":["Consumer Apps","AI/ML","FinTech"],"leadership":"No","collaboration":"Led design handoff with the front-end team","projects":["1) Analytics dashboard visuals (FinTech): Sole designer, team of 6; reduced support tickets by 30%","2) Wallet app screens (Consumer Apps): Sole designer, team of 8; lifted conversion by 35%"],"skills":{"UI Design":5,"UX Research":2,"Wireframing":4,"Prototyping":3,"Visual Design":4,"Design Systems":3,"Accessibility Design":3,"Interaction Design":3,"Motion/Animation":3,"Branding":3},"tools":{"Figma":5,"Adobe XD":1,"Sketch":2,"Illustrator":3,"After Effects":3,"Webflow":2,"Notion":3,"Claude Design / Lovable / Gemini":4,"HTML/CSS (basic)":3,"GitHub (handoff awareness)":2},"test_note":"Duplicate application of C-023 (different email)","fit":"Exceeds","stage":"All Applicants","notes":""},
+      {"id":"C-012","name":"Naina Kapoor","role":"Visual Designer","email":"naina.kapoor28@outlook.com","phone":"+91 89943 45855","location":"Hyderabad, India","portfolio":"https://old-nainakapoor.example/portfolio","resume":"https://files.example.com/resumes/Naina_Kapoor_Resume.pdf","linkedin":"","dribbble":"","behance":"","visa":"Eligible (Indian citizen)","relocate":"Yes","exp":3,"seniority":"Mid","last_title":"Visual Designer","exp_type":"Agency","industries":["Enterprise Software","AI/ML","Healthcare"],"leadership":"Yes","collaboration":"Client-facing; worked with strategists and account managers","projects":["1) Editorial web features (AI/ML): Contributing designer, team of 5; adopted across 2 product teams","2) Campaign key visuals (Healthcare): UI designer, team of 4; cut drop-off by 22%"],"skills":{"UI Design":3,"UX Research":2,"Wireframing":1,"Prototyping":1,"Visual Design":5,"Design Systems":3,"Accessibility Design":2,"Interaction Design":3,"Motion/Animation":4,"Branding":5},"tools":{"Figma":4,"Adobe XD":1,"Sketch":2,"Illustrator":3,"After Effects":2,"Webflow":2,"Notion":2,"Claude Design / Lovable / Gemini":3,"HTML/CSS (basic)":3,"GitHub (handoff awareness)":1},"test_note":"Broken portfolio link (404)","fit":"Meets","stage":"All Applicants","notes":""},
+      {"id":"C-014","name":"Yuki Carter","role":"UX Designer","email":"yuki.carter@gmail.com","phone":"+1 600 3905","location":"Tokyo, Japan","portfolio":"https://drive.google.com/file/d/test-portfolio.pdf","resume":"https://files.example.com/resumes/Yuki_Carter_Resume.pdf","linkedin":"","dribbble":"","behance":"","visa":"Requires work visa","relocate":"No","exp":1,"seniority":"Junior","last_title":"Junior UX Designer","exp_type":"In-house + Freelance","industries":["EdTech"],"leadership":"No","collaboration":"Partnered with PMs and engineers; freelance for startups","projects":["1) Mutual fund discovery flow (EdTech): Co-designed with 2 designers, team of 3; reduced support tickets by 25%","2) Patient intake experience (EdTech): Contributing designer, team of 2; shipped to 120k users"],"skills":{"UI Design":2,"UX Research":3,"Wireframing":3,"Prototyping":1,"Visual Design":1,"Design Systems":2,"Accessibility Design":3,"Interaction Design":2,"Motion/Animation":1,"Branding":1},"tools":{"Figma":4,"Adobe XD":1,"Sketch":1,"Illustrator":1,"After Effects":0,"Webflow":2,"Notion":4,"Claude Design / Lovable / Gemini":4,"HTML/CSS (basic)":2,"GitHub (handoff awareness)":1},"test_note":"Visa blocker and unwilling to relocate","fit":"Below","stage":"All Applicants","notes":""},
+      {"id":"C-015","name":"Priya Desai","role":"Product Designer","email":"priya.desai@proton.me","phone":"+91 91532 88523","location":"Mumbai, India","portfolio":"https://priyadesai.design","resume":"https://files.example.com/resumes/Priya_Desai_Resume.pdf","linkedin":"","dribbble":"","behance":"","visa":"Eligible (Indian citizen)","relocate":"Yes","exp":7,"seniority":"Junior","last_title":"Product Designer","exp_type":"In-house","industries":["Healthcare"],"leadership":"No","collaboration":"Worked daily with PMs and engineers in agile squads","projects":["1) Self-serve KYC journey (Healthcare): Lead designer, team of 4; lifted conversion by 40%","2) Portfolio tracker dashboard (Healthcare): Visual lead, team of 5; adopted across 5 product teams"],"skills":{"UI Design":4,"UX Research":4,"Wireframing":4,"Prototyping":3,"Visual Design":4,"Design Systems":4,"Accessibility Design":4,"Interaction Design":3,"Motion/Animation":2,"Branding":2},"tools":{"Figma":5,"Adobe XD":0,"Sketch":2,"Illustrator":3,"After Effects":1,"Webflow":1,"Notion":3,"Claude Design / Lovable / Gemini":3,"HTML/CSS (basic)":3,"GitHub (handoff awareness)":2},"test_note":"Seniority/experience mismatch (Junior with 7 yrs)","fit":"Needs review","stage":"All Applicants","notes":""},
+      {"id":"C-016","name":"Karthik Banerjee","role":"Product Designer","email":"karthik.banerjee@yahoo.com","phone":"+91 97929 51351","location":"Bengaluru, India","portfolio":"https://karthikbanerjee.design","resume":"https://files.example.com/resumes/Karthik_Banerjee_Resume.pdf","linkedin":"","dribbble":"","behance":"","visa":"Eligible (Indian citizen)","relocate":"No","exp":1,"seniority":"Senior","last_title":"Product Designer","exp_type":"Agency + Freelance","industries":["SaaS","Media & Entertainment"],"leadership":"No","collaboration":"Agency teams plus remote client collaboration","projects":["1) Telehealth booking app (SaaS): Visual lead, team of 6; shipped to 2k users","2) UPI payments onboarding (SaaS): Design lead for 2 squads, team of 5; cut drop-off by 22%"],"skills":{"UI Design":3,"UX Research":3,"Wireframing":5,"Prototyping":5,"Visual Design":3,"Design Systems":3,"Accessibility Design":2,"Interaction Design":3,"Motion/Animation":2,"Branding":1},"tools":{"Figma":5,"Adobe XD":3,"Sketch":2,"Illustrator":2,"After Effects":1,"Webflow":2,"Notion":3,"Claude Design / Lovable / Gemini":4,"HTML/CSS (basic)":2,"GitHub (handoff awareness)":4},"test_note":"Seniority/experience mismatch (Senior with 1 yrs)","fit":"Needs review","stage":"All Applicants","notes":""},
+      {"id":"C-021","name":"Swati Hegde","role":"UX Designer","email":"swati.hegde99@gmail.com","phone":"+91 71528 65280","location":"Hyderabad, India","portfolio":"https://dribbble.com/swatihegde","resume":"https://files.example.com/resumes/Swati_Hegde_Resume.pdf","linkedin":"","dribbble":"","behance":"","visa":"Eligible (Indian citizen)","relocate":"Yes","exp":1,"seniority":"Junior","last_title":"UX Designer","exp_type":"In-house","industries":["Wealth Management","FinTech","SaaS"],"leadership":"No","collaboration":"Partnered with researchers and data analysts","projects":["1) Information architecture overhaul (Wealth Management): Visual lead, team of 10; reduced support tickets by 12%","2) Loan application flow audit (SaaS): Contributing designer, team of 3; adopted across 2 product teams"],"skills":{"UI Design":5,"UX Research":5,"Wireframing":5,"Prototyping":5,"Visual Design":5,"Design Systems":5,"Accessibility Design":5,"Interaction Design":5,"Motion/Animation":5,"Branding":5},"tools":{"Figma":5,"Adobe XD":5,"Sketch":5,"Illustrator":5,"After Effects":5,"Webflow":5,"Notion":5,"Claude Design / Lovable / Gemini":5,"HTML/CSS (basic)":5,"GitHub (handoff awareness)":5},"test_note":"Inflated self-ratings (all 5/5) for a Junior","fit":"Needs review","stage":"All Applicants","notes":""},
+      {"id":"C-023","name":"Bhavya Hegde (Original)","role":"UI Designer","email":"bhavya.hegde40@yahoo.com","phone":"+91 98118 15735","location":"Delhi NCR, India","portfolio":"https://www.behance.net/bhavyahegde","resume":"https://files.example.com/resumes/Bhavya_Hegde_Resume.pdf","linkedin":"","dribbble":"","behance":"","visa":"Eligible (Indian citizen)","relocate":"Yes","exp":3,"seniority":"Mid","last_title":"UI Designer","exp_type":"In-house","industries":["Consumer Apps","AI/ML","FinTech"],"leadership":"No","collaboration":"Led design handoff with the front-end team","projects":["1) Analytics dashboard visuals (FinTech): Sole designer, team of 6; reduced support tickets by 30%","2) Wallet app screens (Consumer Apps): Sole designer, team of 8; lifted conversion by 35%"],"skills":{"UI Design":5,"UX Research":2,"Wireframing":4,"Prototyping":3,"Visual Design":4,"Design Systems":3,"Accessibility Design":3,"Interaction Design":3,"Motion/Animation":3,"Branding":3},"tools":{"Figma":5,"Adobe XD":1,"Sketch":2,"Illustrator":3,"After Effects":3,"Webflow":2,"Notion":3,"Claude Design / Lovable / Gemini":4,"HTML/CSS (basic)":3,"GitHub (handoff awareness)":2},"test_note":"Has duplicate application C-008","fit":"Exceeds","stage":"All Applicants","notes":""}
+    ];
+
+    // State Variables
+    let currentView = "analytics";
+    let currentStage = "All Applicants";
+    let selectedRole = "ALL";
+    let selectedFit = "ALL";
+    let selectedSeniority = "ALL";
+    let selectedIndustry = "ALL";
+    let selectedVisa = "ALL";
+    let searchQuery = "";
+    let blindMode = false;
+    let isMobileView = false;
+    let isLiveScreening = false;
+    let selectedCandidateIds = new Set();
+    let compareCandidateIds = new Set();
+    let currentDrawerCandidateId = null;
+    let currentDrawerQueue = [];
+    let drawerPinned = false;
+    let pendingMergeCandidateId = null;
+
+    let pendingConfirmAction = null;
+    let undoActionTimer = null;
+    let lastDeletedCandidates = [];
+
+    // Elements
+    const viewAnalytics = document.getElementById('view-analytics');
+    const viewScreening = document.getElementById('view-screening');
+    const topbarBreadcrumb = document.getElementById('topbarBreadcrumb');
+    const grid = document.getElementById('candidatesGrid');
+    const zeroState = document.getElementById('zeroState');
+    const filteredCountText = document.getElementById('filteredCountText');
+    const totalCountText = document.getElementById('totalCountText');
+    const activeChipsList = document.getElementById('activeChipsList');
+    const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+    const sortSelect = document.getElementById('sortSelect');
+    const searchInput = document.getElementById('searchInput');
+    const roleSelector = document.getElementById('roleSelector');
+    const compareCountBadge = document.getElementById('compareCountBadge');
+    const navCompareBadge = document.getElementById('navCompareBadge');
+    const liveScreeningBtn = document.getElementById('liveScreeningBtn');
+    const themeToggle = document.getElementById('themeToggle');
+
+    document.getElementById('dNotesInput').addEventListener('input', event => {
+      const c = candidates.find(item => item.id === currentDrawerCandidateId);
+      if (c) c.notes = event.target.value;
+    });
+
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-theme');
+      const dark = document.body.classList.contains('dark-theme');
+      themeToggle.innerHTML = `<i data-lucide="${dark ? 'sun' : 'moon'}" class="w-4 h-4"></i>`;
+      themeToggle.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+      lucide.createIcons();
+    });
+
+    const filterFitSelect = document.getElementById('filterFitSelect');
+    const filterSenioritySelect = document.getElementById('filterSenioritySelect');
+    const filterIndustrySelect = document.getElementById('filterIndustrySelect');
+    const filterVisaSelect = document.getElementById('filterVisaSelect');
+
+    totalCountText.textContent = candidates.length;
+    document.getElementById('screenTopCount').textContent = candidates.filter(c => c.fit === 'Exceeds').length;
+
+    // View Switcher
+    window.switchView = function(view) {
+      currentView = view;
+      document.querySelectorAll('.nav-icon-btn').forEach(btn => btn.classList.remove('sidebar-icon-active', 'text-brand'));
+      
+      if (view === 'analytics') {
+        viewAnalytics.classList.remove('hidden');
+        viewScreening.classList.add('hidden');
+        document.getElementById('nav-btn-analytics').classList.add('sidebar-icon-active');
+        topbarBreadcrumb.textContent = "Analytics Dashboard";
+      } else {
+        viewAnalytics.classList.add('hidden');
+        viewScreening.classList.remove('hidden');
+        document.getElementById('nav-btn-screening').classList.add('sidebar-icon-active');
+        topbarBreadcrumb.textContent = "Role Screening Queue";
+      }
+      lucide.createIcons();
+    };
+
+    // CORRECTION #2: SCREEN ALL 31 TOP CANDIDATES BUTTON HANDLER
+    window.screenTop31Candidates = function() {
+      selectedFit = "Exceeds";
+      filterFitSelect.value = "Exceeds";
+      selectedRole = "ALL";
+      roleSelector.value = "ALL";
+      currentStage = "All Applicants";
+      switchView('screening');
+      filterAndRender();
+      triggerToast(`Screening ${candidates.filter(c => c.fit === 'Exceeds').length} High-Fit Candidates (Exceeds Criteria)`);
+    };
+
+    window.filterByStageDirect = function(stage) {
+      currentStage = stage;
+      switchView('screening');
+      document.querySelectorAll('.stage-tab').forEach(t => {
+        if (t.dataset.stage === stage) {
+          t.classList.add('bg-surface', 'text-textPrimary', 'font-semibold', 'shadow-xs');
+          t.classList.remove('text-textSecondary', 'font-medium');
+        } else {
+          t.classList.remove('bg-surface', 'text-textPrimary', 'font-semibold', 'shadow-xs');
+          t.classList.add('text-textSecondary', 'font-medium');
+        }
+      });
+      filterAndRender();
+    };
+
+    window.focusRoleSelector = function() {
+      switchView('screening');
+      roleSelector.focus();
+    };
+
+    // CORRECTION #5: ROLE CRITERIA MODAL
+    window.openAlignmentInfoModal = function() {
+      document.getElementById('alignmentInfoModal').classList.remove('hidden');
+    };
+    window.closeAlignmentInfoModal = function() {
+      document.getElementById('alignmentInfoModal').classList.add('hidden');
+    };
+
+    // Render Analytics Board
+    function renderAnalyticsBoard() {
+      const topCands = candidates.filter(c => c.fit === "Exceeds").slice(0, 3);
+      document.getElementById('analyticsTableBody').innerHTML = candidates.slice(0, 6).map(c => `
+        <tr class="hover:bg-slate-50 transition">
+          <td class="py-3 px-6 font-semibold text-textPrimary flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-full bg-brand-subtle text-brand border border-indigo-200 flex items-center justify-center font-bold text-[10px]">
+              ${getInitials(c.name)}
+            </div>
+            <span>${c.name}</span>
+          </td>
+          <td class="py-3 px-6 text-textSecondary">${c.role}</td>
+          <td class="py-3 px-6 text-textSecondary">${c.exp} yrs (${c.seniority})</td>
+          <td class="py-3 px-6">${renderFitBadge(c.fit)}</td>
+          <td class="py-3 px-6 text-textSecondary">
+            <span class="font-bold ${c.skills['Design Systems'] >= 4 ? 'text-emerald-700' : 'text-textPrimary'}">${c.skills['Design Systems']}/5 rating</span>
+          </td>
+          <td class="py-3 px-6">
+            <button onclick="openDrawerById('${c.id}')" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-subtle hover:bg-slate-200 text-textSecondary transition cursor-pointer">
+              Review →
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderFitBadge(fit) {
+      if (fit === "Exceeds") {
+        return `<span class="fit-badge inline-flex items-center gap-1.5 px-2.5 py-1 bg-status-strongBg text-status-strongText text-xs font-semibold border border-green-200">
+          <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Exceeds core requirements
+        </span>`;
+      } else if (fit === "Meets") {
+        return `<span class="fit-badge inline-flex items-center gap-1.5 px-2.5 py-1 bg-status-possibleBg text-status-possibleText text-xs font-semibold border border-amber-200">
+          <i data-lucide="check" class="w-3.5 h-3.5"></i> Meets core requirements
+        </span>`;
+      } else if (fit === "Needs review") {
+        return `<span class="fit-badge inline-flex items-center gap-1.5 px-2.5 py-1 bg-status-warningBg text-status-warningText text-xs font-semibold border border-amber-200">
+          <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i> Needs review
+        </span>`;
+      } else {
+        return `<span class="fit-badge inline-flex items-center gap-1.5 px-2.5 py-1 bg-status-weakBg text-status-weakText text-xs font-semibold border border-borderBase">
+          <i data-lucide="minus-circle" class="w-3.5 h-3.5"></i> Partially meets requirements
+        </span>`;
+      }
+    }
+
+    function renderCriteriaMatrix(c) {
+      const criteria = [
+        { label: 'Design systems', priority: 'Core', status: c.skills['Design Systems'] >= 4 ? 'Meets' : 'Needs review', source: c.skills['Design Systems'] >= 4 ? 'Candidate + project' : 'Candidate-reported' },
+        { label: 'Interaction design', priority: 'Core', status: c.skills['Interaction Design'] >= 4 ? 'Meets' : 'Partial', source: 'Candidate-reported' },
+        { label: 'Prototyping', priority: 'Core', status: c.skills.Prototyping >= 4 ? 'Meets' : 'Partial', source: 'Candidate-reported' },
+        { label: 'FinTech experience', priority: 'Supporting', status: c.industries.includes('FinTech') ? 'Meets' : 'Unknown', source: c.industries.includes('FinTech') ? 'Previous industry' : 'Not provided' },
+        { label: 'Leadership', priority: 'Needs confirmation', status: c.leadership === 'Yes' ? 'Meets' : 'Needs review', source: c.leadership === 'Yes' ? 'Candidate profile' : 'Interview needed' }
+      ];
+      const statusClass = {Meets:'text-status-strongText bg-status-strongBg',Partial:'text-status-possibleText bg-status-possibleBg','Needs review':'text-status-warningText bg-status-warningBg',Unknown:'text-textMuted bg-subtle'};
+      return criteria.map(item => `<div class="grid grid-cols-[1fr_auto] gap-2 items-center border border-borderBase rounded-md px-2.5 py-2 bg-white">
+        <div><div class="type-caption font-semibold text-textPrimary">${item.label}</div><div class="text-[10px] text-textMuted">${item.priority} · ${item.source}</div></div>
+        <span class="status-pill px-2 py-0.5 text-[10px] font-semibold ${statusClass[item.status] || statusClass.Unknown}">${item.status}</span>
+      </div>`).join('');
+    }
+
+    function renderSkillChip(label, matched = true, selfReported = false) {
+      const state = matched ? 'matched' : 'unmatched';
+      return `<span class="skill-chip inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-semibold border ${matched ? 'bg-brand-subtle text-brand border-indigo-200' : 'bg-subtle text-textMuted border-borderBase'}" data-state="${state}">${matched ? '✓ ' : ''}${label}${selfReported ? '<span class="text-[9px] font-normal opacity-70">self-reported</span>' : ''}</span>`;
+    }
+
+    function renderExperienceTag(label, matched = true) {
+      return `<span class="experience-tag inline-flex items-center px-2 py-0.5 text-[11px] font-semibold border ${matched ? 'bg-surface text-textSecondary border-borderBase' : 'bg-subtle text-textMuted border-borderBase'}">${label}</span>`;
+    }
+
+    function renderStatusPill(stage) {
+      const config = {
+        'Shortlisted': ['bg-status-strongBg text-status-strongText border-green-200', 'Shortlisted'],
+        'On Hold': ['bg-status-possibleBg text-status-possibleText border-amber-200', 'On hold'],
+        'Archived': ['bg-status-blockerBg text-status-blockerText border-red-200', 'Rejected'],
+        'New': ['bg-brand-subtle text-brand border-indigo-200', 'New']
+      };
+      const [classes, label] = config[stage] || ['bg-subtle text-textSecondary border-borderBase', stage || 'New'];
+      return `<span class="status-pill inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-semibold border ${classes}"><span class="w-1.5 h-1.5 rounded-full bg-current"></span>${label}</span>`;
+    }
+
+    function renderWarningFlag(type) {
+      const isBlocker = type.toLowerCase().includes('visa');
+      return `<span class="warning-flag inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-semibold border ${isBlocker ? 'bg-status-blockerBg text-status-blockerText border-red-200' : 'bg-status-warningBg text-status-warningText border-amber-200'}"><i data-lucide="${isBlocker ? 'alert-octagon' : 'alert-triangle'}" class="w-3 h-3"></i>${type}</span>`;
+    }
+
+    function getInitials(name) {
+      return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+    }
+
+    function renderArtifactThumbnails(c) {
+      if (!c.portfolio) {
+        return `
+          <div class="col-span-3 aspect-[3/1] rounded-xl bg-slate-50 border border-dashed border-borderBase flex flex-col items-center justify-center p-3 text-center">
+            <div class="flex items-center gap-2 text-textMuted mb-0.5">
+              <span class="w-7 h-7 rounded-full bg-brand-subtle text-brand flex items-center justify-center font-semibold text-[10px]">${getInitials(c.name)}</span>
+              <i data-lucide="file-question" class="w-4 h-4"></i>
+              <span class="text-xs font-semibold text-textSecondary">Portfolio not provided</span>
+            </div>
+            <p class="not-provided text-[11px] text-textMuted">Unknown evidence · candidate contribution needs confirmation.</p>
+            <button class="text-[11px] text-brand font-semibold hover:underline mt-1 cursor-pointer" onclick="event.stopPropagation(); triggerToast('Link request dispatched to candidate email')">Request updated link →</button>
+          </div>
+        `;
+      }
+
+      if (c.test_note && c.test_note.includes("Broken portfolio link")) {
+        return `
+          <div class="col-span-3 aspect-[3/1] rounded-xl bg-rose-50 border border-rose-200 flex flex-col items-center justify-center p-3 text-center">
+            <div class="flex items-center gap-1.5 text-rose-700 font-semibold text-xs mb-0.5">
+              <i data-lucide="alert-circle" class="w-4 h-4"></i>
+              <span>HTTP 404: Portfolio URL unreachable</span>
+            </div>
+            <span class="text-[11px] font-mono text-textSecondary truncate max-w-xs">Source unavailable · ${c.portfolio}</span>
+            <button class="text-[11px] text-brand font-semibold hover:underline mt-1 cursor-pointer" onclick="event.stopPropagation(); triggerToast('Notice sent to candidate to provide alternative URL')">Request updated link →</button>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="aspect-[4/3] rounded-xl bg-slate-900 p-2.5 text-white flex flex-col justify-between border border-borderBase overflow-hidden cursor-pointer hover:border-brand transition" onclick="openDrawerById('${c.id}')">
+          <div class="flex items-center justify-between text-[9px] text-slate-400 border-b border-slate-800 pb-1">
+            <span class="font-mono">DS_Tokens_v2</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          </div>
+          <div class="space-y-1 my-auto">
+            <div class="h-1.5 w-3/4 bg-brand rounded"></div>
+            <div class="h-1.5 w-1/2 bg-slate-700 rounded"></div>
+            <div class="h-1.5 w-5/6 bg-slate-600 rounded"></div>
+          </div>
+          <span class="text-[9px] font-mono text-slate-400 truncate">Core Component Library · portfolio</span>
+        </div>
+
+        <div class="aspect-[4/3] rounded-xl bg-white p-2.5 text-textPrimary flex flex-col justify-between border border-borderBase overflow-hidden cursor-pointer hover:border-brand transition" onclick="openDrawerById('${c.id}')">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold truncate">Checkout Revamp</span>
+            <span class="text-[9px] bg-slate-100 px-1 py-0.5 rounded text-textMuted font-mono">Web</span>
+          </div>
+          <div class="bg-subtle p-1.5 rounded border border-borderBase space-y-1">
+            <div class="flex justify-between items-center text-[9px]">
+              <span class="text-textMuted">Conversion</span>
+              <span class="font-bold text-emerald-600">+14%</span>
+            </div>
+            <div class="h-1.5 bg-brand rounded"></div>
+          </div>
+          <span class="text-[9px] text-textMuted">End-to-end UX · portfolio</span>
+        </div>
+
+        <div class="aspect-[4/3] rounded-xl bg-indigo-950 p-2 text-white flex flex-col justify-between border border-indigo-900 overflow-hidden cursor-pointer hover:border-brand transition" onclick="openDrawerById('${c.id}')">
+          <div class="flex items-center justify-between text-[9px] text-indigo-200">
+            <span>Mobile IA</span>
+            <i data-lucide="smartphone" class="w-3 h-3 text-indigo-300"></i>
+          </div>
+          <div class="flex items-end gap-1 h-6 pt-1">
+            <div class="w-2 bg-indigo-500 h-3 rounded-t-xs"></div>
+            <div class="w-2 bg-indigo-400 h-4 rounded-t-xs"></div>
+            <div class="w-2 bg-indigo-300 h-6 rounded-t-xs"></div>
+            <div class="w-2 bg-brand h-5 rounded-t-xs"></div>
+          </div>
+          <span class="text-[9px] text-indigo-300">Handoff spec</span>
+        </div>
+      `;
+    }
+
+    function filterAndRender() {
+      let filtered = candidates.filter(c => {
+        if (currentStage !== "All Applicants" && c.stage !== currentStage) return false;
+        if (selectedRole !== "ALL" && c.role !== selectedRole) return false;
+        if (selectedFit !== "ALL" && c.fit !== selectedFit) return false;
+        if (selectedSeniority !== "ALL" && c.seniority !== selectedSeniority) return false;
+        if (selectedIndustry !== "ALL" && !c.industries.includes(selectedIndustry)) return false;
+        if (selectedVisa !== "ALL") {
+          if (selectedVisa === "Eligible" && !c.visa.includes("Eligible")) return false;
+          if (selectedVisa === "Requires work visa" && !c.visa.includes("Requires")) return false;
+        }
+
+        if (searchQuery) {
+          const q = searchQuery.toLowerCase();
+          const matchesName = c.name.toLowerCase().includes(q);
+          const matchesId = c.id.toLowerCase().includes(q);
+          const matchesTitle = c.last_title.toLowerCase().includes(q);
+          const matchesProjects = c.projects.some(p => p.toLowerCase().includes(q));
+          const matchesNote = c.test_note.toLowerCase().includes(q);
+          if (!matchesName && !matchesId && !matchesTitle && !matchesProjects && !matchesNote) return false;
+        }
+        return true;
+      });
+
+      const sortVal = sortSelect.value;
+      if (sortVal === "fit_desc") {
+        const order = { "Exceeds": 4, "Meets": 3, "Needs review": 2, "Below": 1 };
+        filtered.sort((a, b) => order[b.fit] - order[a.fit]);
+      } else if (sortVal === "exp_desc") {
+        filtered.sort((a, b) => b.exp - a.exp);
+      } else if (sortVal === "exp_asc") {
+        filtered.sort((a, b) => a.exp - b.exp);
+      } else if (sortVal === "name_asc") {
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+      }
+
+      currentDrawerQueue = filtered.map(c => c.id);
+
+      filteredCountText.textContent = filtered.length;
+      updateTabCounts();
+      document.querySelectorAll('[data-filter]').forEach(input => {
+        const filter = input.dataset.filter;
+        input.checked = (filter === 'seniority' && selectedSeniority === input.value)
+          || (filter === 'industry' && selectedIndustry === input.value)
+          || (filter === 'visa' && selectedVisa === input.value)
+          || (filter === 'skill' && input.value === 'Design Systems' && selectedFit === 'Exceeds')
+          || (filter === 'tool' && searchQuery === input.value);
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = "";
+        zeroState.classList.remove('hidden');
+        renderActiveChips();
+        return;
+      }
+
+      zeroState.classList.add('hidden');
+
+      grid.innerHTML = filtered.map(c => {
+        const isChecked = selectedCandidateIds.has(c.id);
+        const isCompared = compareCandidateIds.has(c.id);
+        const displayName = blindMode ? `Candidate ${c.id}` : c.name;
+        const displayAvatar = blindMode ? `
+          <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 font-mono flex items-center justify-center font-bold text-xs" title="Identity shielded under blind review">
+            ##
+          </div>
+        ` : `
+          <div class="w-10 h-10 rounded-full bg-brand-subtle text-brand border border-indigo-200 flex items-center justify-center font-bold text-xs">
+            ${getInitials(c.name)}
+          </div>
+        `;
+
+        let flagHtml = "";
+        if (c.test_note) {
+          if (c.test_note.includes("Visa blocker")) {
+            flagHtml += renderWarningFlag('Visa blocker');
+          } else if (c.test_note.includes("Seniority/experience mismatch")) {
+            flagHtml += renderWarningFlag('Seniority mismatch');
+          } else if (c.test_note.includes("Duplicate application") || c.test_note.includes("Has duplicate application")) {
+            flagHtml += `<button onclick="event.stopPropagation(); openMergeModal('${c.id}')" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-700 hover:bg-purple-100 text-[11px] font-bold border border-purple-200 transition">
+              <i data-lucide="copy" class="w-3 h-3"></i> Duplicate
+            </button>`;
+          }
+        }
+
+        const presence = (c.id === 'C-004' || c.id === 'C-002') ? `
+          <span class="flex items-center gap-1 bg-amber-50 text-amber-700 text-[10px] font-semibold px-2 py-0.5 rounded-full border border-amber-200" title="2 reviewers actively screening right now">
+            <span class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-ping"></span> 2 Reviewing
+          </span>
+        ` : '';
+
+        const industryPills = c.industries.map(ind => `
+          <span class="px-2.5 py-0.5 rounded-full bg-brand-subtle text-brand text-[11px] font-semibold border border-indigo-200">
+            ✓ ${ind}
+          </span>
+        `).join('');
+
+        const projectSnippet = c.projects.length > 0 ? `
+          <p class="text-xs text-textSecondary mt-2.5 line-clamp-1 bg-slate-50 p-2 rounded-xl border border-borderBase">
+            <span class="font-semibold text-textPrimary">Project:</span> ${c.projects[0]}
+          </p>
+        ` : '<p class="text-xs text-textMuted mt-2.5 italic">Notable project details: Not provided</p>';
+
+        return `
+          <div class="candidate-card bg-surface border ${isChecked ? 'is-selected border-brand' : 'border-borderBase'} ${c.stage === 'Shortlisted' ? 'is-shortlisted' : ''} p-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-start justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-3">
+                  <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleSelectCandidate('${c.id}')" class="rounded border-borderBase text-brand h-4 w-4 cursor-pointer" />
+                  ${displayAvatar.replace('w-10 h-10','w-9 h-9')}
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <h3 class="type-title text-textPrimary hover:underline cursor-pointer" onclick="openDrawerById('${c.id}')">${displayName}</h3>
+                      ${presence}
+                    </div>
+                    <p class="text-[11px] text-textSecondary mt-0.5">${c.last_title} · ${c.exp} yrs exp · ${c.location}</p>
+                  </div>
+                </div>
+
+                ${renderFitBadge(c.fit)}
+              </div>
+
+              <div class="text-xs font-semibold text-emerald-700 mb-2">Role alignment · ${c.fit === 'Below' ? 'Partially meets requirements' : c.fit === 'Needs review' ? 'Needs review' : c.fit === 'Meets' ? 'Meets core requirements' : 'Exceeds core requirements'}</div>
+
+              <!-- Vector Artifact Thumbnail Strip -->
+              <div class="thumbnail-strip my-2">
+                ${renderArtifactThumbnails(c)}
+              </div>
+
+              <div class="text-[11px] text-textSecondary truncate mt-2" title="${c.projects[0] || ''}">${c.projects[0] ? c.projects[0].replace(/^1\)\s*/, '').split(':')[0] + ' · ' + (c.leadership === 'Yes' ? 'Lead designer' : 'Contributing designer') : 'Portfolio context not provided'}</div>
+
+              <!-- Skill Tags & Flags -->
+              <div class="flex flex-wrap gap-1.5 items-center mt-3">
+                ${c.industries.map(ind => renderExperienceTag(ind, true)).join('')}
+                ${c.skills['Design Systems'] >= 4 ? renderSkillChip('Design Systems', true, true) : renderSkillChip('Design Systems', false, true)}
+                ${flagHtml}
+              </div>
+              <div class="candidate-evidence-bar mt-2.5"><strong>${c.fit === 'Exceeds' ? '4 of 5' : c.fit === 'Meets' ? '3 of 5' : '2 of 5'} criteria evidenced</strong><span class="ml-auto text-[10px]">${c.test_note ? 'Needs verification' : 'Linked evidence'}</span></div>
+            </div>
+
+            <!-- Card Footer with Explicit Hold -->
+            <div class="pt-3 mt-3 border-t border-borderBase flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                ${renderStatusPill(c.stage)}
+                <span class="text-[11px] font-mono text-textMuted">${c.id}</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <button class="px-2.5 py-1 text-[11px] font-semibold rounded-lg border border-borderBase hover:bg-subtle text-textSecondary transition ${isCompared ? 'bg-indigo-50 border-indigo-200 text-brand font-semibold' : ''}" onclick="toggleCompareCandidate('${c.id}')">
+                  ${isCompared ? '✓ Added' : '+ Compare'}
+                </button>
+                <button class="px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 transition cursor-pointer" onclick="quickHoldCandidate('${c.id}')">
+                  Hold
+                </button>
+                <button class="px-2.5 py-1 text-[11px] font-semibold text-textPrimary bg-brand-subtle hover:bg-indigo-100 rounded-lg transition cursor-pointer" onclick="openDrawerById('${c.id}')">
+                  Open profile
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      renderActiveChips();
+      lucide.createIcons();
+    }
+
+    function renderActiveChips() {
+      const chips = [];
+      if (selectedRole !== "ALL") chips.push({ label: `Role: ${selectedRole}`, clear: () => { selectedRole = "ALL"; roleSelector.value = "ALL"; } });
+      if (selectedFit !== "ALL") chips.push({ label: `Fit: ${selectedFit}`, clear: () => { selectedFit = "ALL"; filterFitSelect.value = "ALL"; } });
+      if (selectedSeniority !== "ALL") chips.push({ label: `Seniority: ${selectedSeniority}`, clear: () => { selectedSeniority = "ALL"; filterSenioritySelect.value = "ALL"; } });
+      if (selectedIndustry !== "ALL") chips.push({ label: `Industry: ${selectedIndustry}`, clear: () => { selectedIndustry = "ALL"; filterIndustrySelect.value = "ALL"; } });
+      if (selectedVisa !== "ALL") chips.push({ label: selectedVisa === 'Eligible' ? 'Eligible' : 'Needs Visa', clear: () => { selectedVisa = "ALL"; filterVisaSelect.value = "ALL"; } });
+
+      clearFiltersBtn.disabled = chips.length === 0 && !searchQuery;
+
+      if (chips.length === 0) {
+        activeChipsList.innerHTML = `<span class="text-[11px] text-textMuted italic">Showing all candidates</span>`;
+        return;
+      }
+
+      activeChipsList.innerHTML = chips.map((c, idx) => `
+        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-brand-subtle text-brand text-xs font-medium border border-blue-200">
+          ${c.label}
+          <i data-lucide="x" class="w-3 h-3 cursor-pointer hover:text-red-600" onclick="window.activeFiltersCallback[${idx}]()"></i>
+        </span>
+      `).join('');
+
+      window.activeFiltersCallback = chips.map(c => () => { c.clear(); filterAndRender(); });
+      lucide.createIcons();
+    }
+
+    window.clearAllFilters = function() {
+      selectedFit = "ALL";
+      selectedSeniority = "ALL";
+      selectedIndustry = "ALL";
+      selectedVisa = "ALL";
+      selectedRole = "ALL";
+      searchQuery = "";
+      filterFitSelect.value = "ALL";
+      filterSenioritySelect.value = "ALL";
+      filterIndustrySelect.value = "ALL";
+      filterVisaSelect.value = "ALL";
+      roleSelector.value = "ALL";
+      searchInput.value = "";
+      document.querySelectorAll('[data-filter]').forEach(input => { input.checked = false; });
+      filterAndRender();
+    };
+
+    clearFiltersBtn.addEventListener('click', window.clearAllFilters);
+
+    filterFitSelect.addEventListener('change', e => { selectedFit = e.target.value; filterAndRender(); });
+    filterSenioritySelect.addEventListener('change', e => { selectedSeniority = e.target.value; filterAndRender(); });
+    filterIndustrySelect.addEventListener('change', e => { selectedIndustry = e.target.value; filterAndRender(); });
+    filterVisaSelect.addEventListener('change', e => { selectedVisa = e.target.value; filterAndRender(); });
+    roleSelector.addEventListener('change', e => { selectedRole = e.target.value; filterAndRender(); });
+    sortSelect.addEventListener('change', filterAndRender);
+    searchInput.addEventListener('input', e => { searchQuery = e.target.value.trim(); filterAndRender(); });
+
+    // Contextual filter rail mirrors the existing select controls so keyboard and link-based
+    // filtering continue to use the same source of truth.
+    document.querySelectorAll('[data-filter]').forEach(input => {
+      input.addEventListener('change', () => {
+        const filter = input.dataset.filter;
+        if (filter === 'seniority') {
+          selectedSeniority = input.checked ? input.value : 'ALL';
+          filterSenioritySelect.value = selectedSeniority;
+        }
+        if (filter === 'industry') {
+          selectedIndustry = input.checked ? input.value : 'ALL';
+          filterIndustrySelect.value = selectedIndustry;
+        }
+        if (filter === 'visa') {
+          selectedVisa = input.checked ? input.value : 'ALL';
+          filterVisaSelect.value = selectedVisa;
+        }
+        if (filter === 'skill') {
+          selectedFit = input.checked && input.value === 'Design Systems' ? 'Exceeds' : 'ALL';
+          filterFitSelect.value = selectedFit;
+        }
+        if (filter === 'tool') {
+          searchQuery = input.checked ? input.value : '';
+          searchInput.value = searchQuery;
+        }
+        filterAndRender();
+      });
+    });
+
+    // Live Screening Button
+    liveScreeningBtn.addEventListener('click', () => {
+      isLiveScreening = !isLiveScreening;
+      if (isLiveScreening) {
+        liveScreeningBtn.classList.add('bg-brand', 'text-white', 'live-active-glow');
+        liveScreeningBtn.classList.remove('bg-indigo-50', 'text-brand');
+        triggerToast("Live Screening Active: Focus mode enabled");
+      } else {
+        liveScreeningBtn.classList.remove('bg-brand', 'text-white', 'live-active-glow');
+        liveScreeningBtn.classList.add('bg-indigo-50', 'text-brand');
+        triggerToast("Live Screening Mode Deactivated");
+      }
+    });
+
+    // Pipeline Stage Tabs
+    document.querySelectorAll('.stage-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.stage-tab').forEach(t => {
+          t.classList.remove('bg-surface', 'text-textPrimary', 'font-semibold', 'shadow-xs');
+          t.classList.add('text-textSecondary', 'font-medium');
+        });
+        tab.classList.add('bg-surface', 'text-textPrimary', 'font-semibold', 'shadow-xs');
+        tab.classList.remove('text-textSecondary', 'font-medium');
+        currentStage = tab.dataset.stage;
+        filterAndRender();
+      });
+    });
+
+    function updateTabCounts() {
+      const shortlisted = candidates.filter(c => c.stage === 'Shortlisted').length;
+      const hold = candidates.filter(c => c.stage === 'On Hold').length;
+      const archived = candidates.filter(c => c.stage === 'Archived').length;
+
+      document.getElementById('tabCountAll').textContent = candidates.filter(c => c.stage === 'All Applicants').length;
+      document.getElementById('tabCountShortlisted').textContent = shortlisted;
+      document.getElementById('tabCountHold').textContent = hold;
+      document.getElementById('tabCountArchived').textContent = archived;
+
+      document.getElementById('kpiShortlistedCount').textContent = shortlisted;
+      document.getElementById('kpiHoldCount').textContent = hold;
+      document.getElementById('kpiArchivedCount').textContent = archived;
+      document.getElementById('funnelShortlistCount').textContent = `${shortlisted} Active`;
+    }
+
+    // Hold Button Handlers
+    window.quickHoldCandidate = function(id) {
+      const c = candidates.find(item => item.id === id);
+      if (c) {
+        c.stage = "On Hold";
+        triggerToast(`${c.name} placed On Hold`);
+        filterAndRender();
+      }
+    };
+
+    window.drawerHold = function() {
+      const c = candidates.find(item => item.id === currentDrawerCandidateId);
+      if (c) {
+        c.stage = "On Hold";
+        triggerToast(`${c.name} placed On Hold`);
+        filterAndRender();
+        nextCandidateDrawer();
+      }
+    };
+
+    // Blind Review Mode
+    const blindToggle = document.getElementById('blindToggle');
+    const blindTrack = document.getElementById('blindTrack');
+    const blindKnob = document.getElementById('blindKnob');
+
+    blindToggle.addEventListener('click', () => {
+      blindMode = !blindMode;
+      if (blindMode) {
+        blindTrack.classList.remove('bg-slate-300');
+        blindTrack.classList.add('bg-brand');
+        blindKnob.classList.add('translate-x-4');
+        triggerToast("Blind review active: Demographic identity hidden");
+      } else {
+        blindTrack.classList.add('bg-slate-300');
+        blindTrack.classList.remove('bg-brand');
+        blindKnob.classList.remove('translate-x-4');
+      }
+      filterAndRender();
+    });
+
+    // Viewport Toggle
+    const viewportToggle = document.getElementById('viewportToggle');
+    const mainContainer = document.getElementById('mainContainer');
+
+    viewportToggle.addEventListener('click', () => {
+      isMobileView = !isMobileView;
+      if (isMobileView) {
+        mainContainer.classList.add('mobile-frame');
+        triggerToast("Testing 390px Mobile Viewport");
+      } else {
+        mainContainer.classList.remove('mobile-frame');
+      }
+    });
+
+    // Bulk Select & Actions
+    window.toggleSelectCandidate = function(id) {
+      if (selectedCandidateIds.has(id)) selectedCandidateIds.delete(id);
+      else selectedCandidateIds.add(id);
+      updateBulkBar();
+      filterAndRender();
+    };
+
+    window.clearSelection = function() {
+      selectedCandidateIds.clear();
+      updateBulkBar();
+      filterAndRender();
+    };
+
+    function updateBulkBar() {
+      const bar = document.getElementById('bulkActionBar');
+      const count = document.getElementById('selectedCount');
+      count.textContent = selectedCandidateIds.size;
+      if (selectedCandidateIds.size > 0) bar.classList.remove('hidden');
+      else bar.classList.add('hidden');
+    }
+
+    window.bulkMoveStage = function(targetStage) {
+      selectedCandidateIds.forEach(id => {
+        const c = candidates.find(item => item.id === id);
+        if (c) c.stage = targetStage;
+      });
+      const count = selectedCandidateIds.size;
+      clearSelection();
+      triggerToast(`${count} candidate(s) moved to ${targetStage}`);
+    };
+
+    window.promptBulkReject = function() {
+      const count = selectedCandidateIds.size;
+      document.getElementById('confirmTitle').textContent = `Reject ${count} Candidate(s)?`;
+      document.getElementById('confirmDesc').textContent = `These ${count} candidate(s) will be moved to Archived / Rejected. You can restore them with the Undo action.`;
+      
+      pendingConfirmAction = () => {
+        lastDeletedCandidates = [];
+        selectedCandidateIds.forEach(id => {
+          const c = candidates.find(item => item.id === id);
+          if (c) {
+            lastDeletedCandidates.push({ candidate: c, prevStage: c.stage });
+            c.stage = "Archived";
+          }
+        });
+        clearSelection();
+        closeConfirmModal();
+        triggerToast(`${count} candidates moved to Rejected`);
+      };
+
+      document.getElementById('confirmActionBtn').onclick = pendingConfirmAction;
+      document.getElementById('confirmModal').classList.remove('hidden');
+    };
+
+    window.closeConfirmModal = function() {
+      document.getElementById('confirmModal').classList.add('hidden');
+      pendingConfirmAction = null;
+    };
+
+    // CORRECTION #3 & #4: DRAWER UPDATES WITH SPIDER RADAR CHART & HORIZONTAL SCROLL STRIP[cite: 12]
+    const drawer = document.getElementById('quickDrawer');
+    const drawerOverlay = document.getElementById('drawerOverlay');
+
+    window.openDrawerById = function(id) {
+      currentDrawerCandidateId = id;
+      const c = candidates.find(item => item.id === id);
+      if (!c) return;
+
+      if (!currentDrawerQueue.length || !currentDrawerQueue.includes(id)) {
+        currentDrawerQueue = candidates.map(item => item.id);
+      }
+      const queueIndex = currentDrawerQueue.indexOf(id);
+      document.getElementById('dCandidateIndex').textContent = `${queueIndex + 1} of ${currentDrawerQueue.length}`;
+
+      document.getElementById('dCandidateRoleTag').textContent = `${c.id} • ${c.role.toUpperCase()}`;
+      document.getElementById('dName').textContent = blindMode ? `Candidate ${c.id}` : c.name;
+      document.getElementById('dSub').textContent = `${c.last_title} • ${c.exp} years • ${c.location}`;
+      document.getElementById('dBreadcrumb').textContent = `Design team / ${c.role} / Candidate review`;
+      const drawerStatus = renderStatusPill(c.stage);
+      const drawerStatusClass = (drawerStatus.match(/class="([^"]+)/) || [,'status-pill'])[1];
+      const drawerStatusLabel = drawerStatus.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+      const drawerStatusNode = document.getElementById('dStatusPill');
+      drawerStatusNode.className = drawerStatusClass;
+      drawerStatusNode.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-current"></span>${drawerStatusLabel}`;
+      document.getElementById('dOwnerMeta').innerHTML = `Owner ${c.id === 'C-004' ? 'Maya Chen' : 'Sarah Jenkins'} · Last reviewed ${c.id === 'C-004' ? '16 Oct 2026' : 'today'} · <span class="text-emerald-700 font-semibold">● ${c.id === 'C-004' ? 'Maya reviewing' : 'Available'}</span>`;
+      const portfolioLink = document.getElementById('dPortfolioLink');
+      portfolioLink.href = c.portfolio || 'javascript:void(0)';
+      portfolioLink.classList.toggle('opacity-50', !c.portfolio);
+      portfolioLink.setAttribute('aria-disabled', String(!c.portfolio));
+      portfolioLink.onclick = c.portfolio ? null : (event => { event.preventDefault(); triggerToast('Portfolio link not provided'); });
+      document.getElementById('dResumeLink').href = c.resume || 'javascript:void(0)';
+      
+      const badge = document.getElementById('dFitBadge');
+      badge.innerHTML = renderFitBadge(c.fit);
+      ['dDsProjectLink','dIxProjectLink'].forEach(linkId => {
+        const link = document.getElementById(linkId);
+        link.href = c.portfolio || 'javascript:void(0)';
+        link.classList.toggle('opacity-50', !c.portfolio);
+        link.onclick = c.portfolio ? null : (event => { event.preventDefault(); triggerToast('Supporting project link not provided'); });
+      });
+
+      // Evidence-first fit summary: explain the criteria instead of implying false precision.
+      document.getElementById('dCriteriaMatrix').innerHTML = renderCriteriaMatrix(c);
+      const matched = c.fit === 'Exceeds' ? '4 of 5' : c.fit === 'Meets' ? '3 of 5' : '2 of 5';
+      document.getElementById('dCriteriaSummary').innerHTML = `<div class="text-[10px] uppercase tracking-wider font-semibold text-textMuted">Role alignment</div><div class="text-sm font-bold text-textPrimary">${matched} criteria supported</div>`;
+      document.getElementById('dLinkedCount').textContent = `${matched} criteria supported by linked evidence`;
+      document.getElementById('dFintechBadge').textContent = c.industries.includes('FinTech') ? 'FinTech Linked' : 'Not provided';
+      document.getElementById('dFintechBadge').className = c.industries.includes('FinTech') ? 'px-2 py-0.5 rounded-md bg-indigo-50 text-brand font-semibold text-[11px]' : 'px-2 py-0.5 rounded-md bg-slate-100 text-textMuted font-semibold text-[11px]';
+
+      // Horizontal Scrollable Portfolio Strip (Image 3[cite: 12])
+      const portStrip = document.getElementById('dPortfolioStripHorizontal');
+      portStrip.innerHTML = `
+        <div class="w-64 p-3 rounded-xl bg-slate-900 text-white shrink-0 border border-slate-800">
+          <span class="text-[9px] text-slate-400 font-mono block">ATLAS / Component Documentation</span>
+          <span class="font-bold text-xs block my-1">Buttons &amp; Interaction States</span>
+          <div class="flex gap-1.5 mt-2">
+            <span class="px-2 py-0.5 rounded bg-brand text-[9px] font-bold">Default</span>
+            <span class="px-2 py-0.5 rounded bg-indigo-600 text-[9px] font-bold">Focus</span>
+            <span class="px-2 py-0.5 rounded bg-slate-700 text-[9px]">Disabled</span>
+          </div>
+        </div>
+
+        <div class="w-64 p-3 rounded-xl bg-white text-textPrimary shrink-0 border border-borderBase">
+          <span class="text-[9px] text-textMuted font-mono block">CHECKOUT / Conversion Flow</span>
+          <span class="font-bold text-xs block my-1">Multi-Currency Payment Modal</span>
+          <div class="p-1.5 rounded bg-slate-50 border border-borderBase text-[10px] flex justify-between mt-1">
+            <span>Stripe Connect</span>
+            <span class="font-bold text-emerald-600">+14% Lift</span>
+          </div>
+        </div>
+
+        <div class="w-64 p-3 rounded-xl bg-indigo-950 text-white shrink-0 border border-indigo-900">
+          <span class="text-[9px] text-indigo-300 font-mono block">ANALYTICS / Mobile IA</span>
+          <span class="font-bold text-xs block my-1">Real-time Liquidity Matrix</span>
+          <div class="flex items-end gap-1 h-5 mt-2">
+            <div class="w-2 bg-indigo-400 h-3 rounded-t-xs"></div>
+            <div class="w-2 bg-indigo-300 h-5 rounded-t-xs"></div>
+            <div class="w-2 bg-brand h-4 rounded-t-xs"></div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('dNotesInput').value = c.notes || "";
+
+      drawerOverlay.classList.remove('hidden');
+      drawer.classList.remove('drawer-closed');
+      drawer.classList.add('drawer-open');
+      lucide.createIcons();
+    };
+
+    window.closeDrawer = function() {
+      if (currentDrawerCandidateId) {
+        const c = candidates.find(item => item.id === currentDrawerCandidateId);
+        if (c) c.notes = document.getElementById('dNotesInput').value;
+      }
+      drawerOverlay.classList.add('hidden');
+      drawer.classList.remove('drawer-open');
+      drawer.classList.add('drawer-closed');
+    };
+
+    window.nextCandidateDrawer = function() {
+      const idx = currentDrawerQueue.indexOf(currentDrawerCandidateId);
+      if (idx !== -1 && idx < currentDrawerQueue.length - 1) {
+        openDrawerById(currentDrawerQueue[idx + 1]);
+      } else {
+        closeDrawer();
+      }
+    };
+
+    window.previousCandidateDrawer = function() {
+      const idx = currentDrawerQueue.indexOf(currentDrawerCandidateId);
+      if (idx > 0) openDrawerById(currentDrawerQueue[idx - 1]);
+    };
+
+    window.toggleDrawerPinned = function() {
+      drawerPinned = !drawerPinned;
+      const button = document.getElementById('drawerPinBtn');
+      button.textContent = drawerPinned ? 'Pinned' : 'Pin';
+      button.classList.toggle('primary', drawerPinned);
+      triggerToast(drawerPinned ? 'Candidate preview pinned open' : 'Candidate preview unpinned');
+    };
+
+    window.focusDrawerNotes = function() {
+      const notes = document.getElementById('dNotesInput');
+      notes.focus();
+      notes.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+
+    document.querySelectorAll('.drawer-anchor').forEach(anchor => {
+      anchor.addEventListener('click', () => {
+        document.querySelectorAll('.drawer-anchor').forEach(item => item.classList.remove('is-active'));
+        anchor.classList.add('is-active');
+        const anchorTargets = {summary: 'drawerRoleFit', portfolio: 'drawerPortfolio', 'role-fit': 'drawerRoleFit', experience: 'drawerExperience', resume: 'drawerPortfolio', notes: 'drawerNotes'};
+        const target = document.getElementById(anchorTargets[anchor.dataset.anchor] || 'drawerNotes');
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        if (!document.getElementById('mergeModal').classList.contains('hidden')) closeMergeModal();
+        else if (!document.getElementById('confirmModal').classList.contains('hidden')) closeConfirmModal();
+        else if (!document.getElementById('compareModal').classList.contains('hidden')) closeCompareModal();
+        else if (!document.getElementById('alignmentInfoModal').classList.contains('hidden')) closeAlignmentInfoModal();
+        else if (!drawer.classList.contains('drawer-closed') && !drawerPinned) closeDrawer();
+      }
+      if (!drawer.classList.contains('drawer-closed') && event.key === 'ArrowRight') nextCandidateDrawer();
+      if (!drawer.classList.contains('drawer-closed') && event.key === 'ArrowLeft') previousCandidateDrawer();
+    });
+
+    window.openMergeModal = function(id) {
+      pendingMergeCandidateId = id;
+      const c = candidates.find(item => item.id === id);
+      document.getElementById('mergeTitle').textContent = c ? `Review ${c.name} and duplicate record` : 'Review duplicate applications';
+      document.getElementById('mergeDesc').textContent = c ? `${c.test_note}. Keep both applications until a reviewer confirms which record should be retained.` : 'Keep both applications until a reviewer confirms which record should be retained.';
+      document.getElementById('mergeModal').classList.remove('hidden');
+      lucide.createIcons();
+    };
+    window.closeMergeModal = function() { pendingMergeCandidateId = null; document.getElementById('mergeModal').classList.add('hidden'); };
+    window.confirmMergeCandidate = function() {
+      const c = candidates.find(item => item.id === pendingMergeCandidateId);
+      closeMergeModal();
+      triggerToast(c ? `Merge review opened for ${c.name}` : 'Merge review opened');
+    };
+
+    window.drawerShortlist = function() {
+      const c = candidates.find(item => item.id === currentDrawerCandidateId);
+      if (c) {
+        c.stage = "Shortlisted";
+        triggerToast(`${c.name} moved to Shortlisted`);
+        filterAndRender();
+        nextCandidateDrawer();
+      }
+    };
+
+    window.drawerReject = function() {
+      const c = candidates.find(item => item.id === currentDrawerCandidateId);
+      if (c) {
+        selectedCandidateIds.clear();
+        selectedCandidateIds.add(c.id);
+        promptBulkReject();
+      }
+    };
+
+    window.toggleCompareCandidate = function(id) {
+      if (compareCandidateIds.has(id)) {
+        compareCandidateIds.delete(id);
+      } else {
+        if (compareCandidateIds.size >= 3) {
+          triggerToast("You can compare up to 3 candidates simultaneously");
+          return;
+        }
+        compareCandidateIds.add(id);
+      }
+      compareCountBadge.textContent = compareCandidateIds.size;
+      if (compareCandidateIds.size > 0) navCompareBadge.classList.remove('hidden');
+      else navCompareBadge.classList.add('hidden');
+      filterAndRender();
+    };
+
+    window.openCompareModal = function() {
+      if (compareCandidateIds.size === 0) {
+        triggerToast("Please add at least 1 or 2 candidates using the '+ Compare' button");
+        return;
+      }
+
+      const compList = Array.from(compareCandidateIds).map(id => candidates.find(c => c.id === id));
+      const matrix = document.getElementById('compareMatrixContainer');
+
+      matrix.innerHTML = `
+        <div class="grid grid-cols-${compList.length} gap-4">
+          ${compList.map(c => `
+            <div class="border border-borderBase rounded-2xl p-5 bg-white flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="font-bold text-sm text-textPrimary">${blindMode ? `Candidate ${c.id}` : c.name}</h3>
+                  <button onclick="toggleCompareCandidate('${c.id}'); openCompareModal();" class="text-xs text-textMuted hover:text-red-600">Remove</button>
+                </div>
+                <p class="text-xs text-textSecondary mb-3">${c.last_title} (${c.seniority}) •${c.exp} yrs exp</p>
+                <div class="mb-4">${renderFitBadge(c.fit)}</div>
+
+                <div class="space-y-4 text-xs">
+                  <div>
+                    <label class="font-bold text-textPrimary uppercase tracking-wider text-[10px] block mb-1">Portfolio Link</label>
+                    <span class="text-textSecondary">${c.portfolio ? `<a href="${c.portfolio}" target="_blank" class="text-brand hover:underline truncate block">${c.portfolio}</a>` : '<span class="text-textMuted italic">Not provided</span>'}</span>
+                  </div>
+
+                  <div>
+                    <label class="font-bold text-textPrimary uppercase tracking-wider text-[10px] block mb-1">Design Systems Score</label>
+                    <span class="font-bold ${c.skills['Design Systems'] >= 4 ? 'text-emerald-700' : 'text-textPrimary'}">${c.skills['Design Systems']}/5 (Self-reported)</span>
+                  </div>
+
+                  <div>
+                    <label class="font-bold text-textPrimary uppercase tracking-wider text-[10px] block mb-1">Industry Background</label>
+                    <div class="flex flex-wrap gap-1 mt-1">
+                      ${c.industries.length > 0 ? c.industries.map(i => `<span class="px-2 py-0.5 rounded-full bg-subtle text-textSecondary text-[10px]">${i}</span>`).join('') : '<span class="text-textMuted italic">Not provided</span>'}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="font-bold text-textPrimary uppercase tracking-wider text-[10px] block mb-1">Stated Project Contribution</label>
+                    <p class="text-textSecondary text-[11px] leading-relaxed bg-slate-50 p-2 rounded-xl border border-borderBase">
+                      ${c.projects.length > 0 ? c.projects[0] : '<span class="text-textMuted italic">Not provided</span>'}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label class="font-bold text-textPrimary uppercase tracking-wider text-[10px] block mb-1">Work Eligibility Gate</label>
+                    <span class="${c.visa.includes('Requires') ? 'text-rose-600 font-bold' : 'text-textSecondary'}">${c.visa} (${c.relocate})</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-6 pt-3 border-t border-borderBase flex justify-end">
+                <button class="px-3.5 py-1.5 bg-brand text-white rounded-xl text-xs font-semibold hover:bg-brand-hover transition" onclick="openDrawerById('${c.id}'); closeCompareModal();">Inspect Full Profile →</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      document.getElementById('compareModal').classList.remove('hidden');
+      lucide.createIcons();
+    };
+
+    window.closeCompareModal = function() {
+      document.getElementById('compareModal').classList.add('hidden');
+    };
+
+    window.triggerToast = function(msg) {
+      const toast = document.getElementById('undoToast');
+      document.getElementById('toastMessage').textContent = msg;
+      toast.classList.remove('hidden');
+      clearTimeout(undoActionTimer);
+      undoActionTimer = setTimeout(() => dismissToast(false), 6000);
+      lucide.createIcons();
+    };
+
+    window.dismissToast = function(wasUndone) {
+      document.getElementById('undoToast').classList.add('hidden');
+      if (wasUndone) {
+        if (lastDeletedCandidates.length > 0) {
+          lastDeletedCandidates.forEach(item => {
+            item.candidate.stage = item.prevStage;
+          });
+          lastDeletedCandidates = [];
+          triggerToast("Rejection reversed: Candidates restored to previous queue");
+          filterAndRender();
+        }
+      }
+    };
+
+    // Initialize
+    renderAnalyticsBoard();
+    filterAndRender();
+    lucide.createIcons();
+  </script>
+</body>
+</html>
