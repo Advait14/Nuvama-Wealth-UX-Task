@@ -22,19 +22,19 @@
             borderStrong: '#D0D5DD',
             textPrimary: '#101828',
             textSecondary: '#475467',
-            textMuted: '#98A2B3',
+            textMuted: '#737A8A',
             brand: {
               DEFAULT: '#03002F',
-              subtle: '#F1F2FF',
+              subtle: '#E5F0FF',
               hover: '#0A075C',
               coral: '#F04D44',
               coralSubtle: '#FFF0EE'
             },
             status: {
               strongText: '#027A48',
-              strongBg: '#ECFDF3',
+              strongBg: '#E5F7ED',
               possibleText: '#B54708',
-              possibleBg: '#FFFAEB',
+              possibleBg: '#FFF8E6',
               weakText: '#344054',
               weakBg: '#F2F4F7',
               warningText: '#B54708',
@@ -137,7 +137,7 @@
     .halo-logo.dark .halo-mark::before { background: var(--hirely-coral); }
     .icon-pack { stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
     .dark-surface { background: var(--hirely-navy); color: #fff; }
-    .candidate-card { border-radius: var(--hirely-radius-lg); transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease; }
+    .candidate-card { position:relative; min-height:360px; border-radius: var(--hirely-radius-lg); transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease; }
     .candidate-card:hover { transform: translateY(-1px); }
     .candidate-card.is-selected { border-color: var(--hirely-navy) !important; box-shadow: 0 0 0 3px rgba(3,0,47,.12); }
     .candidate-card.is-shortlisted { border-top: 3px solid var(--hirely-strong); }
@@ -169,6 +169,17 @@
     .candidate-card .fit-badge { white-space:nowrap; }
     .candidate-evidence-bar { height:20px; border:1px solid var(--hirely-border); border-radius:6px; background:var(--hirely-canvas); display:flex; align-items:center; padding:0 8px; font-size:11px; line-height:16px; color:var(--hirely-secondary); }
     .candidate-evidence-bar strong { color:var(--hirely-navy); }
+    .candidate-signal-row { display:grid; grid-template-columns:86px minmax(0,1fr); align-items:center; gap:8px; }
+    .candidate-uncertainty { min-width:0; display:flex; align-items:center; gap:8px; min-height:28px; padding:4px 8px; border-radius:8px; background:#F6F7F9; color:#626B7A; font-size:11px; line-height:16px; }
+    .candidate-uncertainty.is-flagged { background:#FFF7ED; color:#9A4A0B; }
+    .uncertainty-dot { width:7px; height:7px; flex:0 0 auto; border-radius:50%; background:#98A2B3; }
+    .candidate-uncertainty.is-flagged .uncertainty-dot { background:#D97706; }
+    .candidate-journey-label { color:#687386; font-size:10px; line-height:14px; white-space:nowrap; }
+    .journey-track { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; }
+    .journey-step { min-width:0; border-top:2px solid #E5E7EB; padding-top:6px; color:#7B8493; font-size:10px; line-height:14px; text-align:left; }
+    .journey-step.is-complete { border-color:#157A63; color:#35695C; }
+    .journey-step.is-current { border-color:#DB5B4B; color:#242B38; font-weight:700; }
+    .evidence-confidence-group + .evidence-confidence-group { margin-top:16px; }
     .drawer-scrim { background:rgba(3,0,47,.18) !important; backdrop-filter:none !important; }
     .drawer-anchor { color:var(--hirely-secondary); border-bottom:2px solid transparent; padding:8px 12px; font-size:11px; line-height:16px; cursor:pointer; }
     .drawer-anchor:hover, .drawer-anchor.is-active { color:var(--hirely-navy); border-bottom-color:var(--hirely-coral); }
@@ -190,11 +201,12 @@
       #quickDrawer { width:100vw; }
     }
   </style>
+  <link rel="stylesheet" href="./hirely-visual-system.css">
 </head>
 <body class="min-h-screen bg-canvas text-textPrimary flex antialiased relative overflow-x-hidden">
 
   <!-- ================= WORKING GLOBAL NAVIGATION SIDEBAR ================= -->
-  <aside class="w-[68px] bg-surface border-r border-borderBase flex flex-col items-center justify-between py-5 shrink-0 z-40 select-none">
+  <aside class="hy-workspace-rail w-[68px] bg-surface border-r border-borderBase flex flex-col items-center justify-between py-5 shrink-0 z-40 select-none" aria-label="Hire-ly workspace navigation">
     <div class="flex flex-col items-center gap-6">
       <!-- 1. Hire-ly Brand Mark -->
       <div onclick="switchView('analytics')" class="halo-logo cursor-pointer hover:scale-105 transition" title="Hire-ly Workspace" aria-label="Hire-ly workspace">
@@ -202,7 +214,7 @@
       </div>
 
       <!-- Functional Navigation Icons -->
-      <nav class="flex flex-col gap-2 mt-2">
+      <nav class="flex flex-col gap-2 mt-2" aria-label="Primary workspace sections">
         <!-- Dashboard Analytics -->
         <button id="nav-btn-analytics" onclick="switchView('analytics')" class="nav-icon-btn w-10 h-10 rounded-xl sidebar-icon-active flex items-center justify-center transition cursor-pointer" title="Analytics &amp; Pipeline Overview">
           <svg class="icon-pack w-5 h-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
@@ -254,20 +266,15 @@
     
     <!-- TOP NAVBAR -->
     <header id="topNavbar" class="h-16 bg-surface border-b border-borderBase px-8 flex items-center justify-between sticky top-0 z-30 shadow-xs">
-      <div class="flex items-center gap-4">
-        <div class="flex items-center gap-2 text-xs">
-          <button onclick="switchView('analytics')" class="halo-logo hover:text-brand transition" aria-label="Hire-ly workspace">
-            <span class="halo-mark" style="width:20px;height:20px;border-radius:6px" aria-hidden="true"></span>
-            <span>Hire-ly Workspace</span>
+      <div class="topbar-context flex items-center gap-3 min-w-0">
+        <div class="topbar-brand-crumb flex items-center gap-2 text-xs min-w-0">
+          <button onclick="switchView('analytics')" class="topbar-wordmark text-brand font-bold whitespace-nowrap hover:opacity-80 transition" aria-label="Hire-ly home">
+            Hire-ly
           </button>
-          <span class="text-textMuted">/</span>
-          <span id="topbarBreadcrumb" class="text-textSecondary font-semibold">Analytics Dashboard</span>
         </div>
 
-        <div class="h-5 w-px bg-borderBase"></div>
-
         <!-- Role Requisition Switcher -->
-        <select id="roleSelector" class="text-xs font-semibold text-textSecondary bg-subtle border border-borderBase rounded-lg px-2.5 py-1.5 focus:outline-none cursor-pointer hover:border-brand transition">
+        <select id="roleSelector" class="topbar-role-selector text-xs font-semibold text-textSecondary bg-subtle border border-borderBase rounded-lg px-2.5 py-1.5 focus:outline-none cursor-pointer hover:border-brand transition">
           <option value="ALL">All Roles (100 Total Candidates)</option>
           <option value="Product Designer">Product Designer (17 open)</option>
           <option value="Design Systems Designer">Design Systems Designer (2 open)</option>
@@ -280,6 +287,10 @@
           <option value="Graphic Designer">Graphic Designer (11 open)</option>
           <option value="Interaction Designer">Interaction Designer (5 open)</option>
         </select>
+        <div class="topbar-page-crumb flex items-center gap-2 text-xs min-w-0">
+          <span class="text-textMuted">/</span>
+          <span id="topbarBreadcrumb" class="text-textSecondary font-semibold whitespace-nowrap">Analytics Dashboard</span>
+        </div>
       </div>
 
       <!-- Universal Search -->
@@ -320,7 +331,7 @@
     </header>
 
     <!-- ================= VIEW 1: LANDING ANALYTICS DASHBOARD ================= -->
-    <div id="view-analytics" class="p-8 pb-32 overflow-y-auto space-y-8">
+    <main id="view-analytics" class="p-8 pb-32 overflow-y-auto space-y-8" aria-label="Analytics dashboard">
       
       <!-- Greeting Header -->
       <div class="flex items-center justify-between">
@@ -399,6 +410,22 @@
           </div>
         </div>
       </div>
+
+      <section class="grid grid-cols-1 xl:grid-cols-[1.4fr_1fr] gap-6" aria-label="Review workload and exceptions">
+        <div class="bg-surface border border-borderBase p-6 rounded-2xl shadow-xs">
+          <div class="flex items-start justify-between gap-4 mb-5"><div><h3 class="text-sm font-bold text-textPrimary">Review workload</h3><p class="text-[11px] text-textMuted mt-1">Open profiles by owner · 18 awaiting review</p></div><button onclick="switchView('screening')" class="text-xs font-semibold text-brand hover:underline">Open queue →</button></div>
+          <div class="space-y-4">
+            <div class="grid grid-cols-[112px_1fr_36px] items-center gap-3 text-xs"><span class="font-medium text-textSecondary">Sarah Jenkins</span><div class="h-2 bg-slate-100 rounded-full"><div class="h-2 w-[78%] bg-brand rounded-full"></div></div><strong class="text-right">7</strong></div>
+            <div class="grid grid-cols-[112px_1fr_36px] items-center gap-3 text-xs"><span class="font-medium text-textSecondary">Maya Chen</span><div class="h-2 bg-slate-100 rounded-full"><div class="h-2 w-[56%] bg-indigo-400 rounded-full"></div></div><strong class="text-right">5</strong></div>
+            <div class="grid grid-cols-[112px_1fr_36px] items-center gap-3 text-xs"><span class="font-medium text-textSecondary">Daniel Kim</span><div class="h-2 bg-slate-100 rounded-full"><div class="h-2 w-[44%] bg-emerald-600 rounded-full"></div></div><strong class="text-right">4</strong></div>
+            <div class="grid grid-cols-[112px_1fr_36px] items-center gap-3 text-xs"><span class="font-medium text-textSecondary">Unassigned</span><div class="h-2 bg-slate-100 rounded-full"><div class="h-2 w-[22%] bg-amber-500 rounded-full"></div></div><strong class="text-right">2</strong></div>
+          </div>
+        </div>
+        <div class="bg-surface border border-borderBase p-6 rounded-2xl shadow-xs">
+          <div class="flex items-start justify-between gap-4 mb-4"><div><h3 class="text-sm font-bold text-textPrimary">Exceptions to resolve</h3><p class="text-[11px] text-textMuted mt-1">Human review flags, not negative-fit decisions</p></div><span class="px-2 py-1 rounded-lg bg-amber-50 text-amber-800 text-xs font-semibold">14 open</span></div>
+          <div class="divide-y divide-borderBase"><button onclick="switchView('screening')" class="w-full py-3 flex items-center justify-between text-left"><span><strong class="block text-xs text-textPrimary">Portfolio link unavailable</strong><span class="text-[11px] text-textMuted">Request a current source link</span></span><span class="text-xs font-semibold text-textSecondary">6 →</span></button><button onclick="switchView('screening')" class="w-full py-3 flex items-center justify-between text-left"><span><strong class="block text-xs text-textPrimary">Potential duplicate applications</strong><span class="text-[11px] text-textMuted">Keep both records pending review</span></span><span class="text-xs font-semibold text-textSecondary">3 →</span></button><button onclick="switchView('screening')" class="w-full py-3 flex items-center justify-between text-left"><span><strong class="block text-xs text-textPrimary">Role details need confirmation</strong><span class="text-[11px] text-textMuted">Seniority or contribution is unclear</span></span><span class="text-xs font-semibold text-textSecondary">5 →</span></button></div>
+        </div>
+      </section>
 
       <!-- DATA VISUALIZATION SECTION -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -585,20 +612,20 @@
         </div>
       </div>
 
-    </div>
+    </main>
 
     <!-- ================= VIEW 2: ROLE SCREENING WORKSPACE ================= -->
     <div id="view-screening" class="hidden flex-1 flex flex-col min-w-0">
       
       <!-- ROLE CRITERIA BAR WITH CLICKABLE MODAL LINK -->
-      <div class="bg-surface border-b border-borderBase px-8 py-3.5 flex items-center justify-between">
+      <div class="role-context-strip bg-surface border-b border-borderBase px-8 py-3.5 flex items-center justify-between sticky top-16 z-30">
         <div class="flex items-center gap-3">
           <div>
             <div class="flex items-center gap-2">
               <h3 class="text-xs font-bold text-textPrimary uppercase tracking-wider">Role criteria:</h3>
               <span id="roleCriteriaTitle" class="text-xs font-semibold text-brand">Senior Product Designer • Mid-level to Senior scope</span>
             </div>
-            <div class="flex items-center gap-1.5 mt-1.5 flex-wrap">
+            <div id="roleCriteriaChips" class="flex items-center gap-1.5 mt-1.5 flex-wrap">
               <span class="px-2 py-0.5 rounded-md bg-white border border-borderBase text-[11px] text-textPrimary font-medium">
                 <strong class="font-bold text-textPrimary">Required:</strong> Design Systems
               </span>
@@ -622,7 +649,7 @@
       </div>
 
       <!-- HORIZONTAL FILTER & STAGE BAR -->
-      <div class="screening-toolbar bg-surface border-b border-borderBase px-8 py-3 flex flex-wrap items-center justify-between gap-4 sticky top-16 z-20">
+      <div class="screening-toolbar bg-surface border-b border-borderBase px-8 py-3 flex flex-wrap items-center justify-between gap-4 sticky top-[116px] z-20">
         
         <!-- Left: Pipeline Stage Tabs -->
         <div class="flex items-center gap-1.5 bg-subtle p-1 rounded-xl border border-borderBase">
@@ -703,7 +730,7 @@
       <!-- CANDIDATES WORKSPACE FEED -->
       <main class="screening-feed flex-1 p-8 pb-32 overflow-y-auto">
         <!-- Contextual filters stay adjacent to the queue; global navigation remains in the workspace rail. -->
-        <aside class="context-filter-panel bg-surface border border-borderBase rounded-lg p-4" aria-label="Contextual candidate filters">
+        <aside class="context-filter-panel hy-filter-panel bg-surface border border-borderBase rounded-lg p-4" aria-label="Contextual candidate filters">
           <div class="flex items-center justify-between mb-3">
             <h3 class="type-title text-textPrimary">Filters</h3>
             <button type="button" class="text-[11px] font-semibold text-brand hover:underline" onclick="clearAllFilters()">Clear all</button>
@@ -753,7 +780,7 @@
           </button>
         </div>
 
-        <div id="candidatesGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+        <div id="candidatesGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
         </section>
       </main>
     </div>
@@ -786,9 +813,9 @@
     </div>
     <div class="h-4 w-px bg-slate-700"></div>
     <div class="flex items-center gap-2">
-      <button class="px-3.5 py-1.5 bg-brand hover:bg-brand-hover text-white rounded-xl text-xs font-semibold transition cursor-pointer" onclick="bulkMoveStage('Shortlisted')">Shortlist</button>
+      <button type="button" class="bulk-shortlist-action px-3.5 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer" onclick="bulkMoveStage('Shortlisted')">Shortlist</button>
       <button class="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-semibold transition cursor-pointer" onclick="bulkMoveStage('On Hold')">Move to Hold</button>
-      <button class="px-3.5 py-1.5 bg-rose-900/60 hover:bg-rose-900 text-rose-200 border border-rose-700 rounded-xl text-xs font-semibold transition cursor-pointer" onclick="promptBulkReject()">Reject</button>
+      <button type="button" class="bulk-reject-action px-3.5 py-1.5 bg-rose-900/60 hover:bg-rose-900 border border-rose-700 rounded-xl text-xs font-semibold transition cursor-pointer" onclick="promptBulkReject()">Reject</button>
     </div>
     <button class="text-slate-400 hover:text-white text-xs underline cursor-pointer ml-1" onclick="clearSelection()">Deselect</button>
   </div>
@@ -838,7 +865,7 @@
 
   <!-- ================= CANDIDATE PREVIEW DRAWER (UPDATED PER IMAGE 3) ================= -->
   <div id="drawerOverlay" class="drawer-scrim fixed inset-0 z-40 hidden transition" onclick="closeDrawer()"></div>
-  <aside id="quickDrawer" class="fixed top-0 right-0 w-[580px] max-w-full h-full bg-surface border-l border-borderBase z-50 shadow-2xl flex flex-col justify-between drawer-closed transition-transform duration-300 ease-in-out">
+  <aside id="quickDrawer" class="hy-drawer fixed top-0 right-0 w-[580px] max-w-full h-full bg-surface border-l border-borderBase z-50 shadow-2xl flex flex-col justify-between drawer-closed transition-transform duration-300 ease-in-out" aria-label="Candidate quick preview" aria-hidden="true">
     
     <!-- Drawer Header with Spider Chart -->
     <div class="p-5 border-b border-borderBase bg-surface">
@@ -865,13 +892,19 @@
         </div>
         <div class="flex items-center gap-2 mt-3 flex-wrap">
           <span id="dStatusPill" class="status-pill inline-flex items-center gap-1 px-2 py-1 bg-status-strongBg text-status-strongText border border-emerald-200 text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-current"></span>Shortlisted</span>
+          <label class="inline-flex items-center gap-2 text-[11px] text-textSecondary">Journey stage
+            <select id="dJourneyStage" class="bg-white border border-borderBase rounded-lg px-2 py-1 text-[11px] font-medium" aria-label="Candidate journey stage">
+              <option>Portfolio Review</option><option>Screening Conversation</option><option>Task Round</option><option>Final Design Review</option><option>HR Round</option>
+            </select>
+          </label>
           <span class="drawer-meta" id="dOwnerMeta">Owner Maya Chen · Last reviewed today · <span class="text-emerald-700 font-semibold">● Maya reviewing</span></span>
         </div>
+        <button id="journeySummary" type="button" class="journey-summary mt-2" onclick="document.getElementById('dJourneyStage').focus()"><span class="journey-summary-track"><i id="journeyProgress"></i></span><span id="journeySummaryText">Stage 1 of 5 · Portfolio Review</span></button>
       </div>
 
       <!-- Evidence-first role-fit summary; avoids false-precision gauges -->
-      <div class="flex items-center gap-3">
-        <div class="w-44" id="dCriteriaSummary" aria-label="Role-fit evidence summary"></div>
+      <div class="flex items-center gap-3 mt-3">
+        <div class="sr-only" id="dCriteriaSummary" aria-label="Role-fit evidence summary"></div>
       </div>
       <div class="flex items-center gap-1 mt-4 border-b border-borderBase" role="navigation" aria-label="Candidate sections">
         <button class="drawer-anchor is-active" type="button" data-anchor="summary">Summary</button>
@@ -884,19 +917,17 @@
       <div class="flex items-center gap-2 mt-3 flex-wrap">
         <button class="drawer-action" type="button" onclick="toggleCompareCandidate(currentDrawerCandidateId)">+ Compare</button>
         <button class="drawer-action" type="button" onclick="focusDrawerNotes()">+ Add note</button>
-        <button class="drawer-action" type="button" onclick="triggerToast('Question added to reviewer notes')">? Question</button>
-        <button class="drawer-action" type="button" onclick="triggerToast('Owner assignment control opened')">Assign owner</button>
-        <a class="drawer-action" id="dPortfolioLink" href="#" target="_blank" rel="noreferrer">Open portfolio ↗</a>
+        <details class="drawer-more"><summary class="drawer-action">More</summary><div class="drawer-more-menu"><button type="button" onclick="triggerToast('Question added to reviewer notes')">Add unresolved question</button><button type="button" onclick="triggerToast('Owner assignment control opened')">Assign owner</button><a id="dPortfolioLink" href="#" target="_blank" rel="noreferrer">Open portfolio ↗</a></div></details>
       </div>
     </div>
 
     <!-- Drawer Content Scroll -->
-    <div class="p-6 flex-1 overflow-y-auto space-y-6 custom-scrollbar text-xs">
+    <div class="drawer-content p-6 flex-1 overflow-y-auto space-y-6 custom-scrollbar text-xs">
       
-      <!-- Role Alignment Status Banner -->
-      <div class="bg-subtle p-3.5 rounded-xl border border-borderBase">
+      <!-- Evidence status banner -->
+      <div id="drawerSummary" class="bg-subtle p-3.5 rounded-xl border border-borderBase">
         <div class="flex items-center justify-between mb-1.5">
-          <span id="dFitBadge" class="px-2.5 py-0.5 rounded-full text-xs font-bold border">Role Fit</span>
+          <span id="dFitBadge" class="px-2.5 py-0.5 rounded-full text-xs font-bold border">Evidence Status</span>
           <span class="text-xs font-bold text-textPrimary" id="dLinkedCount">2/3 required with linked samples</span>
         </div>
         <p class="text-[11px] text-textMuted leading-relaxed">
@@ -990,6 +1021,13 @@
     </div>
   </aside>
 
+  <div id="projectOverlay" class="fixed inset-0 z-[70] hidden items-center justify-center bg-slate-950/45 p-6" role="dialog" aria-modal="true" aria-labelledby="projectOverlayTitle" onclick="if(event.target===this)closeProjectOverlay()">
+    <article class="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl">
+      <div class="flex items-center justify-between border-b border-borderBase px-6 py-4"><div><p id="projectOverlayEyebrow" class="type-overline text-textMuted">Portfolio project · Candidate-reported</p><h2 id="projectOverlayTitle" class="type-heading text-textPrimary mt-1">Project title</h2></div><button id="projectOverlayClose" class="drawer-action" onclick="closeProjectOverlay()" aria-label="Close project details">Close</button></div>
+      <div class="grid md:grid-cols-[1.1fr_1fr] gap-6 p-6"><div id="projectOverlayVisual" class="min-h-64 rounded-xl bg-slate-100 p-6 flex flex-col justify-end"><span class="text-xs text-textMuted">Project preview</span></div><div class="space-y-5 text-sm"><div><h3 class="font-semibold text-textPrimary">Context &amp; contribution</h3><p id="projectOverlayContext" class="text-textSecondary mt-2 leading-relaxed"></p></div><div><h3 class="font-semibold text-textPrimary">Outcome</h3><p id="projectOverlayOutcome" class="text-textSecondary mt-2 leading-relaxed"></p></div><div class="flex items-center gap-3"><span class="type-caption text-textMuted">Source</span><span id="projectOverlaySource" class="text-xs text-textSecondary">Candidate-reported</span></div><a id="projectOverlayLink" href="#" target="_blank" rel="noreferrer" class="inline-flex text-sm font-semibold text-brand hover:underline">Open portfolio source ↗</a></div></div>
+    </article>
+  </div>
+
   <!-- ================= 3-UP ALIGNED COMPARISON MODAL ================= -->
   <div id="compareModal" class="fixed inset-0 bg-black/50 z-50 hidden backdrop-blur-xs flex items-center justify-center p-6">
     <div class="bg-surface rounded-2xl max-w-5xl w-full h-[90vh] border border-borderBase shadow-2xl flex flex-col overflow-hidden">
@@ -1053,6 +1091,8 @@
     let pendingConfirmAction = null;
     let undoActionTimer = null;
     let lastDeletedCandidates = [];
+    let lastDrawerAnchor = (() => { try { return sessionStorage.getItem('hirely:lastDrawerAnchor') || 'summary'; } catch { return 'summary'; } })();
+    let queueScrollPosition = 0;
 
     // Elements
     const viewAnalytics = document.getElementById('view-analytics');
@@ -1181,36 +1221,90 @@
     function renderFitBadge(fit) {
       if (fit === "Exceeds") {
         return `<span class="fit-badge inline-flex items-center gap-1.5 px-2.5 py-1 bg-status-strongBg text-status-strongText text-xs font-semibold border border-green-200">
-          <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Exceeds core requirements
+          <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Exceeds Core Requirements
         </span>`;
       } else if (fit === "Meets") {
         return `<span class="fit-badge inline-flex items-center gap-1.5 px-2.5 py-1 bg-status-possibleBg text-status-possibleText text-xs font-semibold border border-amber-200">
-          <i data-lucide="check" class="w-3.5 h-3.5"></i> Meets core requirements
+          <i data-lucide="check" class="w-3.5 h-3.5"></i> Meets Core Requirements
         </span>`;
       } else if (fit === "Needs review") {
         return `<span class="fit-badge inline-flex items-center gap-1.5 px-2.5 py-1 bg-status-warningBg text-status-warningText text-xs font-semibold border border-amber-200">
-          <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i> Needs review
+          <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i> Needs Review
         </span>`;
       } else {
         return `<span class="fit-badge inline-flex items-center gap-1.5 px-2.5 py-1 bg-status-weakBg text-status-weakText text-xs font-semibold border border-borderBase">
-          <i data-lucide="minus-circle" class="w-3.5 h-3.5"></i> Partially meets requirements
+          <i data-lucide="minus-circle" class="w-3.5 h-3.5"></i> Partially Meets Requirements
         </span>`;
       }
     }
 
     function renderCriteriaMatrix(c) {
       const criteria = [
-        { label: 'Design systems', priority: 'Core', status: c.skills['Design Systems'] >= 4 ? 'Meets' : 'Needs review', source: c.skills['Design Systems'] >= 4 ? 'Candidate + project' : 'Candidate-reported' },
-        { label: 'Interaction design', priority: 'Core', status: c.skills['Interaction Design'] >= 4 ? 'Meets' : 'Partial', source: 'Candidate-reported' },
-        { label: 'Prototyping', priority: 'Core', status: c.skills.Prototyping >= 4 ? 'Meets' : 'Partial', source: 'Candidate-reported' },
-        { label: 'FinTech experience', priority: 'Supporting', status: c.industries.includes('FinTech') ? 'Meets' : 'Unknown', source: c.industries.includes('FinTech') ? 'Previous industry' : 'Not provided' },
-        { label: 'Leadership', priority: 'Needs confirmation', status: c.leadership === 'Yes' ? 'Meets' : 'Needs review', source: c.leadership === 'Yes' ? 'Candidate profile' : 'Interview needed' }
+        { label: 'Design systems', priority: 'Core', status: c.skills['Design Systems'] >= 4 ? 'Meets' : 'Needs review', confidence: c.portfolio ? 'Linked material · not verified' : 'Candidate-reported', source: c.portfolio ? 'Portfolio source available; attribution needs review' : 'Self-reported skill' },
+        { label: 'Interaction design', priority: 'Core', status: c.skills['Interaction Design'] >= 4 ? 'Meets' : 'Partial', confidence: 'Candidate-reported', source: 'Self-reported skill' },
+        { label: 'Prototyping', priority: 'Core', status: c.skills.Prototyping >= 4 ? 'Meets' : 'Partial', confidence: c.portfolio ? 'Needs confirmation' : 'No linked sample', source: c.portfolio ? 'Sample needs reviewer attribution' : 'No project source supplied' },
+        { label: 'FinTech experience', priority: 'Supporting', status: c.industries.includes('FinTech') ? 'Meets' : 'Unknown', confidence: c.industries.includes('FinTech') ? 'Candidate-reported' : 'No linked sample', source: c.industries.includes('FinTech') ? 'Previous industry' : 'Not provided' },
+        { label: 'Leadership', priority: 'Supporting', status: c.leadership === 'Yes' ? 'Needs confirmation' : 'Unknown', confidence: c.leadership === 'Yes' ? 'Needs confirmation' : 'No linked sample', source: c.leadership === 'Yes' ? 'Confirm contribution in interview' : 'Not provided' }
       ];
       const statusClass = {Meets:'text-status-strongText bg-status-strongBg',Partial:'text-status-possibleText bg-status-possibleBg','Needs review':'text-status-warningText bg-status-warningBg',Unknown:'text-textMuted bg-subtle'};
-      return criteria.map(item => `<div class="grid grid-cols-[1fr_auto] gap-2 items-center border border-borderBase rounded-md px-2.5 py-2 bg-white">
-        <div><div class="type-caption font-semibold text-textPrimary">${item.label}</div><div class="text-[10px] text-textMuted">${item.priority} · ${item.source}</div></div>
-        <span class="status-pill px-2 py-0.5 text-[10px] font-semibold ${statusClass[item.status] || statusClass.Unknown}">${item.status}</span>
-      </div>`).join('');
+      const confidenceOrder = ['Linked material · not verified','Candidate-reported','Needs confirmation','No linked sample'];
+      return confidenceOrder.map((group, index) => {
+        const rows = criteria.filter(item => item.confidence === group);
+        if (!rows.length) return '';
+        return `<details class="evidence-confidence-group" ${index===0?'open':''}><summary class="type-overline text-textMuted mb-2">${group} <span class="font-normal">· ${rows.length}</span></summary><div class="space-y-2 mt-2">${rows.map(item => `<div class="grid grid-cols-[1fr_auto] gap-2 items-center border border-borderBase rounded-lg px-3 py-2.5 bg-white">
+          <div><div class="type-caption font-semibold text-textPrimary">${item.label}</div><div class="text-[10px] text-textMuted">${item.priority} · ${item.source}</div></div>
+          <span class="status-pill px-2 py-0.5 text-[10px] font-semibold ${statusClass[item.status] || statusClass.Unknown}">${item.status}</span>
+        </div>`).join('')}</div></details>`;
+      }).join('');
+    }
+
+    const journeyStages = ['Portfolio Review','Screening Conversation','Task Round','Final Design Review','HR Round'];
+
+    function getJourneyStage(c) {
+      if (c.journeyStage) return c.journeyStage;
+      return c.journeyStage = journeyStages[0];
+    }
+
+    function renderJourneyTrack(c) {
+      const active = journeyStages.indexOf(getJourneyStage(c));
+      const summary = document.getElementById('journeySummaryText');
+      const progress = document.getElementById('journeyProgress');
+      if (summary) summary.textContent = `Stage ${active + 1} of ${journeyStages.length} · ${getJourneyStage(c)}`;
+      if (progress) progress.style.width = `${((active + 1) / journeyStages.length) * 100}%`;
+    }
+
+    window.setCandidateJourneyStage = function(candidateId, index) {
+      const candidate = candidates.find(item => item.id === candidateId);
+      if (!candidate || !journeyStages[index]) return;
+      candidate.journeyStage = journeyStages[index];
+      document.getElementById('dJourneyStage').value = candidate.journeyStage;
+      renderJourneyTrack(candidate);
+      triggerToast(`Journey stage updated to ${candidate.journeyStage}`);
+    };
+
+    function getWorkflowStatus(c) {
+      return ({'All Applicants':'Awaiting review','Shortlisted':'Shortlisted','On Hold':'On hold','Archived':'Rejected'})[c.stage] || c.stage || 'Awaiting review';
+    }
+
+    function updateRoleContext() {
+      const role = selectedRole === 'ALL' ? null : selectedRole;
+      const configuredRequirements = {required:['Design Systems','Interaction Design','UX Research'],preferred:['FinTech']};
+      const detail = role === 'Product Designer'
+        ? {scope:'Sample criteria · Mid-level to Senior', ...configuredRequirements}
+        : {scope:role ? 'Criteria not configured in this demo' : 'Select a requisition for role-specific criteria',required:[],preferred:[]};
+      document.getElementById('roleCriteriaTitle').textContent = `${role || 'All roles'} · ${detail.scope}`;
+      const chips = `${detail.required.map(label=>`<span class="px-2 py-0.5 rounded-md bg-white border border-borderBase text-[11px] text-textPrimary font-medium"><strong class="font-bold">Required:</strong> ${label}</span>`).join('')} ${detail.preferred.map(label=>`<span class="px-2 py-0.5 rounded-md bg-white border border-borderBase text-[11px] text-textPrimary font-medium"><strong class="font-bold">Preferred:</strong> ${label}</span>`).join('')}`;
+      document.getElementById('roleCriteriaChips').innerHTML = chips || '<span class="text-[11px] text-textMuted">Role criteria are set by the hiring team and are not configured for this requisition in the demo.</span>';
+    }
+
+    function getProjectDetails(c, index = 0) {
+      const raw = c.projects?.[index] || '';
+      const clean = raw.replace(/^\d+\)\s*/, '');
+      const colon = clean.indexOf(':');
+      const title = colon >= 0 ? clean.slice(0, colon).replace(/\s*\([^)]*\)$/, '') : clean || 'Portfolio project';
+      const detail = colon >= 0 ? clean.slice(colon + 1).trim() : 'Candidate-reported project details are not available.';
+      const parts = detail.split(';').map(part => part.trim());
+      return {title, context: parts[0] || 'Context not provided', outcome: parts.slice(1).join('; ') || 'Outcome not provided', raw, index};
     }
 
     function renderSkillChip(label, matched = true, selfReported = false) {
@@ -1224,6 +1318,7 @@
 
     function renderStatusPill(stage) {
       const config = {
+        'All Applicants': ['bg-slate-50 text-textSecondary border-borderBase', 'Awaiting review'],
         'Shortlisted': ['bg-status-strongBg text-status-strongText border-green-200', 'Shortlisted'],
         'On Hold': ['bg-status-possibleBg text-status-possibleText border-amber-200', 'On hold'],
         'Archived': ['bg-status-blockerBg text-status-blockerText border-red-200', 'Rejected'],
@@ -1231,6 +1326,18 @@
       };
       const [classes, label] = config[stage] || ['bg-subtle text-textSecondary border-borderBase', stage || 'New'];
       return `<span class="status-pill inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-semibold border ${classes}"><span class="w-1.5 h-1.5 rounded-full bg-current"></span>${label}</span>`;
+    }
+
+    function renderReviewerPresence(c) {
+      const reviewers = [
+        { initials: 'SJ', name: 'Sarah Jenkins', color: 'reviewer-avatar--indigo' },
+        { initials: 'MC', name: 'Maya Chen', color: 'reviewer-avatar--coral' },
+        { initials: 'AK', name: 'Aditi Kapoor', color: 'reviewer-avatar--teal' }
+      ];
+      const n = Number((c.id.match(/\d+/) || ['0'])[0]);
+      const active = n % 4 === 0 ? reviewers.slice(0, 2) : n % 3 === 0 ? reviewers.slice(1, 2) : [];
+      if (!active.length) return '';
+      return `<span class="reviewer-presence" title="Currently reviewing: ${active.map(person => person.name).join(', ')}" aria-label="Currently reviewing by ${active.map(person => person.name).join(' and ')}"><span class="reviewer-live-dot" aria-hidden="true"></span><span>Reviewing</span><span class="reviewer-avatars" aria-hidden="true">${active.map(person => `<span class="reviewer-avatar ${person.color}">${person.initials}</span>`).join('')}</span></span>`;
     }
 
     function renderWarningFlag(type) {
@@ -1270,47 +1377,18 @@
         `;
       }
 
+      const projectLabel = c.projects[0]
+        ? c.projects[0].replace(/^1\)\s*/, '').split(':')[0]
+        : 'Portfolio project';
       return `
-        <div class="aspect-[4/3] rounded-xl bg-slate-900 p-2.5 text-white flex flex-col justify-between border border-borderBase overflow-hidden cursor-pointer hover:border-brand transition" onclick="openDrawerById('${c.id}')">
-          <div class="flex items-center justify-between text-[9px] text-slate-400 border-b border-slate-800 pb-1">
-            <span class="font-mono">DS_Tokens_v2</span>
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-          </div>
-          <div class="space-y-1 my-auto">
-            <div class="h-1.5 w-3/4 bg-brand rounded"></div>
-            <div class="h-1.5 w-1/2 bg-slate-700 rounded"></div>
-            <div class="h-1.5 w-5/6 bg-slate-600 rounded"></div>
-          </div>
-          <span class="text-[9px] font-mono text-slate-400 truncate">Core Component Library · portfolio</span>
+        <div class="aspect-[4/3] rounded-xl bg-slate-900 border border-slate-800 flex items-end p-3 text-white overflow-hidden cursor-pointer hover:border-brand transition" onclick="openDrawerById('${c.id}')">
+          <span class="text-[10px] font-semibold truncate">${projectLabel}</span>
         </div>
-
-        <div class="aspect-[4/3] rounded-xl bg-white p-2.5 text-textPrimary flex flex-col justify-between border border-borderBase overflow-hidden cursor-pointer hover:border-brand transition" onclick="openDrawerById('${c.id}')">
-          <div class="flex items-center justify-between">
-            <span class="text-[10px] font-bold truncate">Checkout Revamp</span>
-            <span class="text-[9px] bg-slate-100 px-1 py-0.5 rounded text-textMuted font-mono">Web</span>
-          </div>
-          <div class="bg-subtle p-1.5 rounded border border-borderBase space-y-1">
-            <div class="flex justify-between items-center text-[9px]">
-              <span class="text-textMuted">Conversion</span>
-              <span class="font-bold text-emerald-600">+14%</span>
-            </div>
-            <div class="h-1.5 bg-brand rounded"></div>
-          </div>
-          <span class="text-[9px] text-textMuted">End-to-end UX · portfolio</span>
+        <div class="aspect-[4/3] rounded-xl bg-slate-100 border border-borderBase flex items-end p-3 text-textPrimary overflow-hidden cursor-pointer hover:border-brand transition" onclick="openDrawerById('${c.id}')">
+          <span class="text-[10px] font-semibold truncate">Product experience</span>
         </div>
-
-        <div class="aspect-[4/3] rounded-xl bg-indigo-950 p-2 text-white flex flex-col justify-between border border-indigo-900 overflow-hidden cursor-pointer hover:border-brand transition" onclick="openDrawerById('${c.id}')">
-          <div class="flex items-center justify-between text-[9px] text-indigo-200">
-            <span>Mobile IA</span>
-            <i data-lucide="smartphone" class="w-3 h-3 text-indigo-300"></i>
-          </div>
-          <div class="flex items-end gap-1 h-6 pt-1">
-            <div class="w-2 bg-indigo-500 h-3 rounded-t-xs"></div>
-            <div class="w-2 bg-indigo-400 h-4 rounded-t-xs"></div>
-            <div class="w-2 bg-indigo-300 h-6 rounded-t-xs"></div>
-            <div class="w-2 bg-brand h-5 rounded-t-xs"></div>
-          </div>
-          <span class="text-[9px] text-indigo-300">Handoff spec</span>
+        <div class="aspect-[4/3] rounded-xl bg-indigo-950 border border-indigo-900 flex items-end p-3 text-white overflow-hidden cursor-pointer hover:border-brand transition" onclick="openDrawerById('${c.id}')">
+          <span class="text-[10px] font-semibold truncate">Interaction work</span>
         </div>
       `;
     }
@@ -1373,7 +1451,19 @@
 
       zeroState.classList.add('hidden');
 
-      grid.innerHTML = filtered.map(c => {
+      const duplicateIds = new Set();
+      filtered.forEach(candidate => {
+        const match = candidate.test_note && candidate.test_note.match(/(C-\d+)/i);
+        if (match) duplicateIds.add(match[1]);
+      });
+      const visibleCandidates = filtered.filter(candidate => {
+        const isDuplicateCopy = candidate.test_note && /duplicate application/i.test(candidate.test_note);
+        return !(isDuplicateCopy && !duplicateIds.has(candidate.id));
+      });
+      currentDrawerQueue = visibleCandidates.map(candidate => candidate.id);
+      filteredCountText.textContent = visibleCandidates.length;
+
+      grid.innerHTML = visibleCandidates.map(c => {
         const isChecked = selectedCandidateIds.has(c.id);
         const isCompared = compareCandidateIds.has(c.id);
         const displayName = blindMode ? `Candidate ${c.id}` : c.name;
@@ -1387,81 +1477,54 @@
           </div>
         `;
 
-        let flagHtml = "";
-        if (c.test_note) {
-          if (c.test_note.includes("Visa blocker")) {
-            flagHtml += renderWarningFlag('Visa blocker');
-          } else if (c.test_note.includes("Seniority/experience mismatch")) {
-            flagHtml += renderWarningFlag('Seniority mismatch');
-          } else if (c.test_note.includes("Duplicate application") || c.test_note.includes("Has duplicate application")) {
-            flagHtml += `<button onclick="event.stopPropagation(); openMergeModal('${c.id}')" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-700 hover:bg-purple-100 text-[11px] font-bold border border-purple-200 transition">
-              <i data-lucide="copy" class="w-3 h-3"></i> Duplicate
-            </button>`;
-          }
-        }
-
-        const presence = (c.id === 'C-004' || c.id === 'C-002') ? `
-          <span class="flex items-center gap-1 bg-amber-50 text-amber-700 text-[10px] font-semibold px-2 py-0.5 rounded-full border border-amber-200" title="2 reviewers actively screening right now">
-            <span class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-ping"></span> 2 Reviewing
-          </span>
-        ` : '';
-
-        const industryPills = c.industries.map(ind => `
-          <span class="px-2.5 py-0.5 rounded-full bg-brand-subtle text-brand text-[11px] font-semibold border border-indigo-200">
-            ✓ ${ind}
-          </span>
-        `).join('');
-
-        const projectSnippet = c.projects.length > 0 ? `
-          <p class="text-xs text-textSecondary mt-2.5 line-clamp-1 bg-slate-50 p-2 rounded-xl border border-borderBase">
-            <span class="font-semibold text-textPrimary">Project:</span> ${c.projects[0]}
-          </p>
-        ` : '<p class="text-xs text-textMuted mt-2.5 italic">Notable project details: Not provided</p>';
+        const hasDuplicateFlag = duplicateIds.has(c.id) || /duplicate application/i.test(c.test_note || '');
+        const uncertaintyText = hasDuplicateFlag ? 'Potential duplicate · linked application needs human review'
+          : c.test_note ? c.test_note.replace(/^Has duplicate application\s*/i, 'Potential duplicate: ').replace(/^Missing\s*/i, 'Missing ').replace(/^Visa blocker.*/i, 'Eligibility needs confirmation').replace(/^Seniority\/experience mismatch.*/i, 'Seniority needs confirmation')
+          : 'No open verification flags';
+        const isUncertain = hasDuplicateFlag || Boolean(c.test_note);
+        const flagHtml = `<div class="candidate-uncertainty ${isUncertain ? 'is-flagged' : ''}" role="status"><span class="uncertainty-dot"></span><span class="truncate">${uncertaintyText}</span>${hasDuplicateFlag ? `<button onclick="event.stopPropagation(); openMergeModal('${c.id}')" class="ml-auto shrink-0 font-semibold underline underline-offset-2">Review</button>` : ''}</div>`;
 
         return `
-          <div class="candidate-card bg-surface border ${isChecked ? 'is-selected border-brand' : 'border-borderBase'} ${c.stage === 'Shortlisted' ? 'is-shortlisted' : ''} p-4 flex flex-col justify-between">
+          <div class="candidate-card hy-candidate-card bg-surface border ${isChecked ? 'is-selected border-brand' : 'border-borderBase'} ${c.stage === 'Shortlisted' ? 'is-shortlisted' : ''} p-4 flex flex-col justify-between">
             <div>
-              <div class="flex items-start justify-between gap-2 mb-2.5">
-                <div class="flex items-center gap-3">
-                  <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleSelectCandidate('${c.id}')" class="rounded border-borderBase text-brand h-4 w-4 cursor-pointer" />
+              <div class="candidate-card-header flex items-start justify-between gap-4 mb-2.5">
+                <div class="candidate-card-identity flex items-center gap-3 min-w-0 flex-1">
                   ${displayAvatar.replace('w-10 h-10','w-9 h-9')}
-                  <div>
-                    <div class="flex items-center gap-2">
-                      <h3 class="type-title text-textPrimary hover:underline cursor-pointer" onclick="openDrawerById('${c.id}')">${displayName}</h3>
-                      ${presence}
-                    </div>
-                    <p class="text-[11px] text-textSecondary mt-0.5">${c.last_title} · ${c.exp} yrs exp · ${c.location}</p>
+                  <div class="candidate-card-text min-w-0 flex-1">
+                    <h3 class="type-title text-textPrimary hover:underline cursor-pointer truncate" onclick="openDrawerById('${c.id}')">${displayName}</h3>
+                    <p class="text-[11px] text-textSecondary mt-1 truncate">${c.last_title} · ${c.exp} yrs exp · ${c.location}</p>
                   </div>
                 </div>
-
-                ${renderFitBadge(c.fit)}
+                <div class="candidate-card-status flex items-start justify-end gap-2 shrink-0">${renderReviewerPresence(c)}${renderFitBadge(c.fit)}</div>
               </div>
 
-              <div class="text-xs font-semibold text-emerald-700 mb-2">Role alignment · ${c.fit === 'Below' ? 'Partially meets requirements' : c.fit === 'Needs review' ? 'Needs review' : c.fit === 'Meets' ? 'Meets core requirements' : 'Exceeds core requirements'}</div>
-
-              <!-- Vector Artifact Thumbnail Strip -->
-              <div class="thumbnail-strip my-2">
-                ${renderArtifactThumbnails(c)}
+              <div class="mt-3 pt-3 border-t border-borderBase">
+                <div class="flex items-center justify-between gap-3">
+                  <span class="text-[11px] font-semibold uppercase tracking-wide text-textMuted">Evidence snapshot</span>
+                  <button class="text-[11px] text-brand hover:underline" onclick="openProjectOverlay('${c.id}',0)">View work ↗</button>
+                </div>
+                <p class="candidate-evidence-description text-xs text-textSecondary mt-1.5" title="${c.projects[0] || ''}">
+                  ${c.projects[0] ? getProjectDetails(c).title + ' · ' + (c.leadership === 'Yes' ? 'Led the work' : 'Contributed to the work') : 'No portfolio project provided'}
+                </p>
+                <div class="candidate-evidence-bar mt-2"><strong>${c.fit === 'Exceeds' ? '4 of 5' : c.fit === 'Meets' ? '3 of 5' : '2 of 5'} core criteria with evidence</strong><span class="ml-auto text-[10px]">${c.portfolio ? 'Source linked · attribution unverified' : 'No linked source'}</span></div>
               </div>
 
-              <div class="text-[11px] text-textSecondary truncate mt-2" title="${c.projects[0] || ''}">${c.projects[0] ? c.projects[0].replace(/^1\)\s*/, '').split(':')[0] + ' · ' + (c.leadership === 'Yes' ? 'Lead designer' : 'Contributing designer') : 'Portfolio context not provided'}</div>
-
-              <!-- Skill Tags & Flags -->
-              <div class="flex flex-wrap gap-1.5 items-center mt-3">
-                ${c.industries.map(ind => renderExperienceTag(ind, true)).join('')}
-                ${c.skills['Design Systems'] >= 4 ? renderSkillChip('Design Systems', true, true) : renderSkillChip('Design Systems', false, true)}
-                ${flagHtml}
-              </div>
-              <div class="candidate-evidence-bar mt-2.5"><strong>${c.fit === 'Exceeds' ? '4 of 5' : c.fit === 'Meets' ? '3 of 5' : '2 of 5'} criteria evidenced</strong><span class="ml-auto text-[10px]">${c.test_note ? 'Needs verification' : 'Linked evidence'}</span></div>
+              <div class="candidate-signal-row mt-3"><span class="type-overline text-textMuted">Uncertainty</span>${flagHtml}</div>
             </div>
 
             <!-- Card Footer with Explicit Hold -->
-            <div class="pt-3 mt-3 border-t border-borderBase flex items-center justify-between gap-2">
-              <div class="flex items-center gap-2">
-                ${renderStatusPill(c.stage)}
-                <span class="text-[11px] font-mono text-textMuted">${c.id}</span>
+            <div class="candidate-card-footer pt-3 mt-3 border-t border-borderBase flex flex-col gap-2">
+              <div class="candidate-card-meta-row flex items-center justify-between gap-2">
+                <div class="candidate-card-status-meta flex items-center gap-2 min-w-0">
+                  ${renderStatusPill(c.stage)}
+                  <span class="candidate-journey-label">${getJourneyStage(c)}</span>
+                </div>
+                <span class="candidate-id text-[11px] font-mono text-textMuted">ID: ${c.id}</span>
               </div>
-              <div class="flex items-center gap-1">
+              <div class="candidate-card-actions flex items-center justify-end gap-2">
+                <button type="button" class="candidate-select-btn px-2.5 py-1 text-[11px] font-semibold rounded-lg border border-borderBase hover:bg-subtle text-textSecondary transition" aria-pressed="${isChecked}" onclick="toggleSelectCandidate('${c.id}')">
+                  ${isChecked ? '✓ Selected' : 'Select'}
+                </button>
                 <button class="px-2.5 py-1 text-[11px] font-semibold rounded-lg border border-borderBase hover:bg-subtle text-textSecondary transition ${isCompared ? 'bg-indigo-50 border-indigo-200 text-brand font-semibold' : ''}" onclick="toggleCompareCandidate('${c.id}')">
                   ${isCompared ? '✓ Added' : '+ Compare'}
                 </button>
@@ -1483,7 +1546,7 @@
 
     function renderActiveChips() {
       const chips = [];
-      if (selectedRole !== "ALL") chips.push({ label: `Role: ${selectedRole}`, clear: () => { selectedRole = "ALL"; roleSelector.value = "ALL"; } });
+      if (selectedRole !== "ALL") chips.push({ label: `Role: ${selectedRole}`, clear: () => { selectedRole = "ALL"; roleSelector.value = "ALL"; updateRoleContext(); } });
       if (selectedFit !== "ALL") chips.push({ label: `Fit: ${selectedFit}`, clear: () => { selectedFit = "ALL"; filterFitSelect.value = "ALL"; } });
       if (selectedSeniority !== "ALL") chips.push({ label: `Seniority: ${selectedSeniority}`, clear: () => { selectedSeniority = "ALL"; filterSenioritySelect.value = "ALL"; } });
       if (selectedIndustry !== "ALL") chips.push({ label: `Industry: ${selectedIndustry}`, clear: () => { selectedIndustry = "ALL"; filterIndustrySelect.value = "ALL"; } });
@@ -1519,6 +1582,7 @@
       filterIndustrySelect.value = "ALL";
       filterVisaSelect.value = "ALL";
       roleSelector.value = "ALL";
+      updateRoleContext();
       searchInput.value = "";
       document.querySelectorAll('[data-filter]').forEach(input => { input.checked = false; });
       filterAndRender();
@@ -1530,7 +1594,7 @@
     filterSenioritySelect.addEventListener('change', e => { selectedSeniority = e.target.value; filterAndRender(); });
     filterIndustrySelect.addEventListener('change', e => { selectedIndustry = e.target.value; filterAndRender(); });
     filterVisaSelect.addEventListener('change', e => { selectedVisa = e.target.value; filterAndRender(); });
-    roleSelector.addEventListener('change', e => { selectedRole = e.target.value; filterAndRender(); });
+    roleSelector.addEventListener('change', e => { selectedRole = e.target.value; updateRoleContext(); filterAndRender(); });
     sortSelect.addEventListener('change', filterAndRender);
     searchInput.addEventListener('input', e => { searchQuery = e.target.value.trim(); filterAndRender(); });
 
@@ -1765,50 +1829,35 @@
 
       // Evidence-first fit summary: explain the criteria instead of implying false precision.
       document.getElementById('dCriteriaMatrix').innerHTML = renderCriteriaMatrix(c);
-      const matched = c.fit === 'Exceeds' ? '4 of 5' : c.fit === 'Meets' ? '3 of 5' : '2 of 5';
-      document.getElementById('dCriteriaSummary').innerHTML = `<div class="text-[10px] uppercase tracking-wider font-semibold text-textMuted">Role alignment</div><div class="text-sm font-bold text-textPrimary">${matched} criteria supported</div>`;
-      document.getElementById('dLinkedCount').textContent = `${matched} criteria supported by linked evidence`;
+      document.getElementById('dCriteriaSummary').innerHTML = `${c.fit}`;
+      const stageIndex = journeyStages.indexOf(getJourneyStage(c));
+      document.getElementById('journeySummaryText').textContent = `Stage ${stageIndex + 1} of ${journeyStages.length} · ${getJourneyStage(c)}`;
+      document.getElementById('journeyProgress').style.width = `${((stageIndex + 1) / journeyStages.length) * 100}%`;
+      document.getElementById('dLinkedCount').textContent = c.portfolio ? 'Portfolio source linked · attribution unverified' : 'No linked sample · request updated link';
       document.getElementById('dFintechBadge').textContent = c.industries.includes('FinTech') ? 'FinTech Linked' : 'Not provided';
       document.getElementById('dFintechBadge').className = c.industries.includes('FinTech') ? 'px-2 py-0.5 rounded-md bg-indigo-50 text-brand font-semibold text-[11px]' : 'px-2 py-0.5 rounded-md bg-slate-100 text-textMuted font-semibold text-[11px]';
 
-      // Horizontal Scrollable Portfolio Strip (Image 3[cite: 12])
+      // Project overlay follows a portfolio case-study pattern while retaining candidate context.
       const portStrip = document.getElementById('dPortfolioStripHorizontal');
-      portStrip.innerHTML = `
-        <div class="w-64 p-3 rounded-xl bg-slate-900 text-white shrink-0 border border-slate-800">
-          <span class="text-[9px] text-slate-400 font-mono block">ATLAS / Component Documentation</span>
-          <span class="font-bold text-xs block my-1">Buttons &amp; Interaction States</span>
-          <div class="flex gap-1.5 mt-2">
-            <span class="px-2 py-0.5 rounded bg-brand text-[9px] font-bold">Default</span>
-            <span class="px-2 py-0.5 rounded bg-indigo-600 text-[9px] font-bold">Focus</span>
-            <span class="px-2 py-0.5 rounded bg-slate-700 text-[9px]">Disabled</span>
-          </div>
-        </div>
-
-        <div class="w-64 p-3 rounded-xl bg-white text-textPrimary shrink-0 border border-borderBase">
-          <span class="text-[9px] text-textMuted font-mono block">CHECKOUT / Conversion Flow</span>
-          <span class="font-bold text-xs block my-1">Multi-Currency Payment Modal</span>
-          <div class="p-1.5 rounded bg-slate-50 border border-borderBase text-[10px] flex justify-between mt-1">
-            <span>Stripe Connect</span>
-            <span class="font-bold text-emerald-600">+14% Lift</span>
-          </div>
-        </div>
-
-        <div class="w-64 p-3 rounded-xl bg-indigo-950 text-white shrink-0 border border-indigo-900">
-          <span class="text-[9px] text-indigo-300 font-mono block">ANALYTICS / Mobile IA</span>
-          <span class="font-bold text-xs block my-1">Real-time Liquidity Matrix</span>
-          <div class="flex items-end gap-1 h-5 mt-2">
-            <div class="w-2 bg-indigo-400 h-3 rounded-t-xs"></div>
-            <div class="w-2 bg-indigo-300 h-5 rounded-t-xs"></div>
-            <div class="w-2 bg-brand h-4 rounded-t-xs"></div>
-          </div>
-        </div>
-      `;
+      const drawerProject = getProjectDetails(c);
+      portStrip.innerHTML = `<button type="button" onclick="openProjectOverlay('${c.id}',0)" class="w-full text-left rounded-xl border border-borderBase bg-slate-100 p-4 hover:border-brand transition"><span class="text-[10px] uppercase tracking-wide text-textMuted">${c.industries[0] || 'Portfolio'} · Candidate-reported</span><span class="mt-1 block font-semibold text-sm text-textPrimary">${drawerProject.title}</span><span class="mt-1 block text-xs text-textSecondary line-clamp-2">${drawerProject.context}</span><span class="mt-3 inline-flex text-xs font-semibold text-brand">Open project details ↗</span></button>`;
 
       document.getElementById('dNotesInput').value = c.notes || "";
+
+      const journeySelect = document.getElementById('dJourneyStage');
+      journeySelect.value = getJourneyStage(c);
+      renderJourneyTrack(c);
+      journeySelect.onchange = event => { c.journeyStage = event.target.value; renderJourneyTrack(c); filterAndRender(); triggerToast(`Journey stage updated to ${event.target.value}`); };
+      const queueFeed = document.querySelector('.screening-feed');
+      if (queueFeed) queueScrollPosition = queueFeed.scrollTop;
 
       drawerOverlay.classList.remove('hidden');
       drawer.classList.remove('drawer-closed');
       drawer.classList.add('drawer-open');
+      drawer.setAttribute('aria-hidden', 'false');
+      document.querySelectorAll('.drawer-anchor').forEach(item => item.classList.toggle('is-active', item.dataset.anchor === lastDrawerAnchor));
+      const anchorTargets = {summary:'drawerRoleFit',portfolio:'drawerPortfolio','role-fit':'drawerRoleFit',experience:'drawerExperience',resume:'drawerPortfolio',notes:'drawerNotes'};
+      document.getElementById(anchorTargets[lastDrawerAnchor] || 'drawerRoleFit')?.scrollIntoView({block:'start'});
       lucide.createIcons();
     };
 
@@ -1820,6 +1869,8 @@
       drawerOverlay.classList.add('hidden');
       drawer.classList.remove('drawer-open');
       drawer.classList.add('drawer-closed');
+      drawer.setAttribute('aria-hidden', 'true');
+      requestAnimationFrame(() => { const feed = document.querySelector('.screening-feed'); if (feed) feed.scrollTop = queueScrollPosition; });
     };
 
     window.nextCandidateDrawer = function() {
@@ -1850,8 +1901,40 @@
       notes.scrollIntoView({ behavior: 'smooth', block: 'center' });
     };
 
+    window.openProjectOverlay = function(candidateId, projectIndex = 0) {
+      const candidate = candidates.find(item => item.id === candidateId);
+      if (!candidate) return;
+      const project = getProjectDetails(candidate, projectIndex);
+      const overlay = document.getElementById('projectOverlay');
+      document.getElementById('projectOverlayTitle').textContent = project.title;
+      document.getElementById('projectOverlayEyebrow').textContent = `${candidate.industries[0] || 'Portfolio'} · Candidate-reported · ${blindMode ? candidate.id : candidate.name}`;
+      document.getElementById('projectOverlayContext').textContent = project.context;
+      document.getElementById('projectOverlayOutcome').textContent = project.outcome;
+      document.getElementById('projectOverlaySource').textContent = candidate.portfolio ? 'Candidate-supplied portfolio · not independently verified' : 'No linked sample';
+      const visual = document.getElementById('projectOverlayVisual');
+      const palette = ['bg-indigo-950 text-white','bg-slate-900 text-white','bg-emerald-950 text-white','bg-slate-100 text-textPrimary'];
+      visual.className = `min-h-64 rounded-xl p-6 flex flex-col justify-end ${palette[Number(candidate.id.match(/\d+/)?.[0] || 0) % palette.length]}`;
+      visual.innerHTML = `<span class="text-xs opacity-70">PROJECT ${String(project.index + 1).padStart(2,'0')}</span><strong class="mt-2 text-xl leading-tight">${project.title}</strong><span class="mt-2 text-sm opacity-80">${candidate.industries.join(' · ') || 'Design work'}</span>`;
+      const link = document.getElementById('projectOverlayLink');
+      link.href = candidate.portfolio || '#';
+      link.setAttribute('aria-disabled', String(!candidate.portfolio));
+      link.classList.toggle('opacity-50', !candidate.portfolio);
+      link.onclick = candidate.portfolio ? null : event => { event.preventDefault(); triggerToast('No linked portfolio source; request an updated link'); };
+      overlay.classList.remove('hidden');
+      overlay.classList.add('flex');
+      document.getElementById('projectOverlayClose')?.focus();
+    };
+    window.closeProjectOverlay = function() {
+      const overlay = document.getElementById('projectOverlay');
+      overlay.classList.add('hidden');
+      overlay.classList.remove('flex');
+      if (!drawer.classList.contains('drawer-closed')) document.getElementById('drawerPinBtn').focus();
+    };
+
     document.querySelectorAll('.drawer-anchor').forEach(anchor => {
       anchor.addEventListener('click', () => {
+        lastDrawerAnchor = anchor.dataset.anchor;
+        try { sessionStorage.setItem('hirely:lastDrawerAnchor', lastDrawerAnchor); } catch {}
         document.querySelectorAll('.drawer-anchor').forEach(item => item.classList.remove('is-active'));
         anchor.classList.add('is-active');
         const anchorTargets = {summary: 'drawerRoleFit', portfolio: 'drawerPortfolio', 'role-fit': 'drawerRoleFit', experience: 'drawerExperience', resume: 'drawerPortfolio', notes: 'drawerNotes'};
@@ -1862,7 +1945,8 @@
 
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape') {
-        if (!document.getElementById('mergeModal').classList.contains('hidden')) closeMergeModal();
+      if (!document.getElementById('projectOverlay').classList.contains('hidden')) closeProjectOverlay();
+        else if (!document.getElementById('mergeModal').classList.contains('hidden')) closeMergeModal();
         else if (!document.getElementById('confirmModal').classList.contains('hidden')) closeConfirmModal();
         else if (!document.getElementById('compareModal').classList.contains('hidden')) closeCompareModal();
         else if (!document.getElementById('alignmentInfoModal').classList.contains('hidden')) closeAlignmentInfoModal();
@@ -1928,60 +2012,18 @@
         return;
       }
 
-      const compList = Array.from(compareCandidateIds).map(id => candidates.find(c => c.id === id));
+      const compList = Array.from(compareCandidateIds).map(id => candidates.find(c => c.id === id)).filter(Boolean);
       const matrix = document.getElementById('compareMatrixContainer');
-
-      matrix.innerHTML = `
-        <div class="grid grid-cols-${compList.length} gap-4">
-          ${compList.map(c => `
-            <div class="border border-borderBase rounded-2xl p-5 bg-white flex flex-col justify-between">
-              <div>
-                <div class="flex items-center justify-between mb-2">
-                  <h3 class="font-bold text-sm text-textPrimary">${blindMode ? `Candidate ${c.id}` : c.name}</h3>
-                  <button onclick="toggleCompareCandidate('${c.id}'); openCompareModal();" class="text-xs text-textMuted hover:text-red-600">Remove</button>
-                </div>
-                <p class="text-xs text-textSecondary mb-3">${c.last_title} (${c.seniority}) •${c.exp} yrs exp</p>
-                <div class="mb-4">${renderFitBadge(c.fit)}</div>
-
-                <div class="space-y-4 text-xs">
-                  <div>
-                    <label class="font-bold text-textPrimary uppercase tracking-wider text-[10px] block mb-1">Portfolio Link</label>
-                    <span class="text-textSecondary">${c.portfolio ? `<a href="${c.portfolio}" target="_blank" class="text-brand hover:underline truncate block">${c.portfolio}</a>` : '<span class="text-textMuted italic">Not provided</span>'}</span>
-                  </div>
-
-                  <div>
-                    <label class="font-bold text-textPrimary uppercase tracking-wider text-[10px] block mb-1">Design Systems Score</label>
-                    <span class="font-bold ${c.skills['Design Systems'] >= 4 ? 'text-emerald-700' : 'text-textPrimary'}">${c.skills['Design Systems']}/5 (Self-reported)</span>
-                  </div>
-
-                  <div>
-                    <label class="font-bold text-textPrimary uppercase tracking-wider text-[10px] block mb-1">Industry Background</label>
-                    <div class="flex flex-wrap gap-1 mt-1">
-                      ${c.industries.length > 0 ? c.industries.map(i => `<span class="px-2 py-0.5 rounded-full bg-subtle text-textSecondary text-[10px]">${i}</span>`).join('') : '<span class="text-textMuted italic">Not provided</span>'}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label class="font-bold text-textPrimary uppercase tracking-wider text-[10px] block mb-1">Stated Project Contribution</label>
-                    <p class="text-textSecondary text-[11px] leading-relaxed bg-slate-50 p-2 rounded-xl border border-borderBase">
-                      ${c.projects.length > 0 ? c.projects[0] : '<span class="text-textMuted italic">Not provided</span>'}
-                    </p>
-                  </div>
-
-                  <div>
-                    <label class="font-bold text-textPrimary uppercase tracking-wider text-[10px] block mb-1">Work Eligibility Gate</label>
-                    <span class="${c.visa.includes('Requires') ? 'text-rose-600 font-bold' : 'text-textSecondary'}">${c.visa} (${c.relocate})</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="mt-6 pt-3 border-t border-borderBase flex justify-end">
-                <button class="px-3.5 py-1.5 bg-brand text-white rounded-xl text-xs font-semibold hover:bg-brand-hover transition" onclick="openDrawerById('${c.id}'); closeCompareModal();">Inspect Full Profile →</button>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      `;
+      const rows = [
+        {label:'Fit category', value:c=>c.fit, evidence:c=>c.fit === 'Exceeds' ? 'Evidence supports strong alignment' : c.fit === 'Needs review' ? 'Human review required' : 'Evidence summary'},
+        ...['Design Systems','Interaction Design','Prototyping','UX Research','Visual Design','Accessibility Design'].map(skill => ({label:skill, value:c=>`${c.skills[skill] ?? '—'}/5`, evidence:c=>c.portfolio ? 'Candidate-reported · sample available to inspect' : 'Candidate-reported · no linked sample'})),
+        {label:'Relevant experience', value:c=>`${c.exp} yrs · ${c.seniority}`, evidence:c=>c.industries.join(', ') || 'Not provided'},
+        {label:'Portfolio project', value:c=>getProjectDetails(c).title, evidence:c=>c.portfolio ? 'Linked source · contribution is candidate-reported' : 'No linked sample'},
+        {label:'Eligibility', value:c=>c.visa, evidence:c=>c.relocate},
+        {label:'Workflow status', value:c=>getWorkflowStatus(c), evidence:c=>`Journey: ${getJourneyStage(c)}`},
+        {label:'Reviewer notes', value:c=>c.notes || 'No note yet', evidence:()=> 'Reviewer-authored'}
+      ];
+      matrix.innerHTML = `<div class="overflow-x-auto rounded-xl border border-borderBase"><table class="w-full min-w-[720px] border-collapse text-left text-xs"><thead class="bg-slate-50"><tr><th class="sticky left-0 bg-slate-50 p-4 min-w-48">Evidence dimension</th>${compList.map(c=>`<th class="p-4 min-w-52 border-l border-borderBase align-top"><div class="flex items-start justify-between gap-2"><div><strong class="block text-sm text-textPrimary">${blindMode ? `Candidate ${c.id}` : c.name}</strong><span class="block mt-1 font-normal text-textMuted">${c.last_title} · ${c.exp} yrs · ${c.location}</span><div class="mt-2">${renderFitBadge(c.fit)}</div></div><button onclick="toggleCompareCandidate('${c.id}'); openCompareModal();" class="text-textMuted hover:text-rose-600" aria-label="Remove ${c.name} from comparison">Remove</button></div></th>`).join('')}</tr></thead><tbody>${rows.map(row=>`<tr class="border-t border-borderBase"><th class="sticky left-0 bg-white p-4 font-semibold text-textPrimary">${row.label}</th>${compList.map(c=>`<td class="p-4 border-l border-borderBase align-top"><strong class="block text-textPrimary">${row.value(c)}</strong><span class="mt-1 block leading-relaxed text-[11px] text-textMuted">${row.evidence(c)}</span></td>`).join('')}</tr>`).join('')}</tbody></table></div><p class="mt-4 text-[11px] text-textMuted">Evidence labels describe source confidence, not a hiring verdict. Missing evidence does not imply negative fit.</p><div class="mt-4 flex flex-wrap gap-2">${compList.map(c=>`<button class="drawer-action" onclick="closeCompareModal(); openDrawerById('${c.id}')">Review ${blindMode ? c.id : c.name} →</button>`).join('')}</div>`;
 
       document.getElementById('compareModal').classList.remove('hidden');
       lucide.createIcons();
@@ -2015,9 +2057,11 @@
     };
 
     // Initialize
+    updateRoleContext();
     renderAnalyticsBoard();
     filterAndRender();
     lucide.createIcons();
   </script>
+  <script src="./hirely-visual-system.js"></script>
 </body>
 </html>
